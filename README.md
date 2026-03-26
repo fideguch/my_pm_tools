@@ -52,6 +52,12 @@ set-up-github-project/
 │   ├── setup-fields.sh                # カスタムフィールド作成
 │   ├── setup-views.sh                 # 5ビュー作成
 │   └── setup-all.sh                   # 全環境一括構築
+├── skills/
+│   ├── code-quality/SKILL.md          # ESLint + Prettier + Husky + lint-staged 導入
+│   ├── ci-cd-pipeline/SKILL.md        # GitHub Actions CI/CD 品質パイプライン構築
+│   ├── typescript-best-practices/SKILL.md  # TypeScript ベストプラクティス & 初期設定
+│   ├── git-workflow/SKILL.md          # Git ワークフロー & ブランチ戦略
+│   └── project-setup-automation/SKILL.md   # GitHub Projects V2 環境自動構築
 ├── templates/
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── feature_request.yml        # 機能要望テンプレート
@@ -67,6 +73,18 @@ set-up-github-project/
     ├── view-design.md                 # 5ビュー設計書
     └── automation-guide.md            # 自動化ガイド
 ```
+
+## コーディングスキル
+
+プロジェクト環境構築で活用できる5つのスキルを同梱しています：
+
+| スキル | 説明 |
+|--------|------|
+| **code-quality** | ESLint + Prettier + Husky + lint-staged の統合セットアップ。プロジェクトの技術スタックを自動検出し、最適な設定を生成 |
+| **ci-cd-pipeline** | GitHub Actions を使った品質パイプライン構築。lint → typecheck → test → build の品質ゲートを自動実行 |
+| **typescript-best-practices** | TypeScript の推奨 tsconfig、型安全コーディングガイドライン、テスト設定 |
+| **git-workflow** | Conventional Commits、ブランチ命名規則、PR/Issue テンプレート、commitlint 設定 |
+| **project-setup-automation** | GitHub Projects V2 の14ステータス・5ビュー・カスタムフィールド・ラベルを一括構築 |
 
 ## 14ステータスワークフロー
 
