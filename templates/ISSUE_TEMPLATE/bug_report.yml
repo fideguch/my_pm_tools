@@ -1,23 +1,23 @@
-name: "バグ報告 (Bug Report)"
-description: "バグの報告"
-labels: ["bug"]
+name: 'バグ報告 (Bug Report)'
+description: 'バグの報告'
+labels: ['bug']
 body:
   - type: markdown
     attributes:
-      value: "## バグ報告"
+      value: '## バグ報告'
   - type: textarea
     id: summary
     attributes:
-      label: "バグの概要"
-      description: "発生している問題を簡潔に記述してください"
-      placeholder: "○○画面で△△をすると、□□が発生する"
+      label: 'バグの概要'
+      description: '発生している問題を簡潔に記述してください'
+      placeholder: '○○画面で△△をすると、□□が発生する'
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: "再現手順"
-      description: "バグを再現するための手順"
+      label: '再現手順'
+      description: 'バグを再現するための手順'
       placeholder: |
         1. ○○画面を開く
         2. △△をクリック
@@ -28,23 +28,23 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: "期待される動作"
-      description: "本来どうなるべきか"
-      placeholder: "○○が正常に表示される"
+      label: '期待される動作'
+      description: '本来どうなるべきか'
+      placeholder: '○○が正常に表示される'
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: "実際の動作"
-      description: "現在何が起きているか"
-      placeholder: "エラーメッセージが表示される / 画面が真っ白になる"
+      label: '実際の動作'
+      description: '現在何が起きているか'
+      placeholder: 'エラーメッセージが表示される / 画面が真っ白になる'
     validations:
       required: true
   - type: dropdown
     id: severity
     attributes:
-      label: "深刻度"
+      label: '深刻度'
       options:
         - P0 - サービス停止レベル
         - P1 - 主要機能が使えない
@@ -56,8 +56,8 @@ body:
   - type: textarea
     id: environment
     attributes:
-      label: "環境情報"
-      description: "ブラウザ、OS、バージョンなど"
+      label: '環境情報'
+      description: 'ブラウザ、OS、バージョンなど'
       placeholder: |
         - OS: macOS 14.x
         - Browser: Chrome 120
@@ -67,7 +67,7 @@ body:
   - type: textarea
     id: screenshots
     attributes:
-      label: "スクリーンショット・ログ"
-      description: "問題を示す画像やエラーログがあれば添付"
+      label: 'スクリーンショット・ログ'
+      description: '問題を示す画像やエラーログがあれば添付'
     validations:
       required: false

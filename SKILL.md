@@ -231,10 +231,11 @@ Project Settings → Workflows で以下を有効化:
 - `project-automation.yml` — PR↔Issue ステータス連動
 - `pr-labeler.yml` — PR 自動ラベル付与
 - `stale-detection.yml` — 滞留タスク検知（週次）
+- `roadmap-date-sync.yml` — Roadmap 日付同期（Sprint Iteration の開始日・終了日を確認）
 
 ### 完了確認
 - [ ] Built-in Workflows 5つが有効
-- [ ] `.github/workflows/` に4ファイルが存在する
+- [ ] `.github/workflows/` に5ファイルが存在する
 
 ---
 

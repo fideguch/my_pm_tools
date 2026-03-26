@@ -1,38 +1,38 @@
-name: "機能要望 (Feature Request)"
-description: "新機能の提案"
-labels: ["feature"]
+name: '機能要望 (Feature Request)'
+description: '新機能の提案'
+labels: ['feature']
 body:
   - type: markdown
     attributes:
-      value: "## 機能要望"
+      value: '## 機能要望'
   - type: textarea
     id: summary
     attributes:
-      label: "概要"
-      description: "実現したいことを簡潔に記述してください"
-      placeholder: "ユーザーが○○できるようにしたい"
+      label: '概要'
+      description: '実現したいことを簡潔に記述してください'
+      placeholder: 'ユーザーが○○できるようにしたい'
     validations:
       required: true
   - type: textarea
     id: background
     attributes:
-      label: "背景・課題"
-      description: "なぜこの機能が必要なのか、現在の課題を説明してください"
-      placeholder: "現状は○○のため、△△の問題がある"
+      label: '背景・課題'
+      description: 'なぜこの機能が必要なのか、現在の課題を説明してください'
+      placeholder: '現状は○○のため、△△の問題がある'
     validations:
       required: true
   - type: textarea
     id: solution
     attributes:
-      label: "提案する解決策"
-      description: "どのように解決したいか具体的に記述してください"
-      placeholder: "○○画面に△△ボタンを追加し..."
+      label: '提案する解決策'
+      description: 'どのように解決したいか具体的に記述してください'
+      placeholder: '○○画面に△△ボタンを追加し...'
     validations:
       required: false
   - type: dropdown
     id: priority
     attributes:
-      label: "希望優先度"
+      label: '希望優先度'
       options:
         - P0 - 即日着手
         - P1 - 高 (1〜3営業日)
@@ -44,8 +44,8 @@ body:
   - type: textarea
     id: acceptance
     attributes:
-      label: "受け入れ基準"
-      description: "この機能が完成したと判断する条件"
+      label: '受け入れ基準'
+      description: 'この機能が完成したと判断する条件'
       placeholder: |
         - [ ] ○○ができること
         - [ ] △△が表示されること
@@ -54,7 +54,7 @@ body:
   - type: textarea
     id: additional
     attributes:
-      label: "補足情報"
-      description: "スクリーンショット、参考URL、関連Issueなど"
+      label: '補足情報'
+      description: 'スクリーンショット、参考URL、関連Issueなど'
     validations:
       required: false
