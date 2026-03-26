@@ -96,6 +96,7 @@ npx husky init
 ### 3.1 ESLint 設定（Flat Config — eslint.config.mjs）
 
 **TypeScript プロジェクト:**
+
 ```javascript
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
@@ -126,6 +127,7 @@ export default tseslint.config(
 ```
 
 **JavaScript プロジェクト:**
+
 ```javascript
 import eslint from '@eslint/js';
 import prettierConfig from 'eslint-config-prettier';
@@ -233,6 +235,7 @@ git add /tmp/test.js 2>/dev/null || true
 ### 4.3 問題修正
 
 エラーが出た場合:
+
 1. `eslint --fix .` で自動修正可能なものを修正
 2. `prettier --write .` でフォーマット修正
 3. 残りの手動修正が必要なものをユーザーに報告
@@ -258,16 +261,16 @@ git add /tmp/test.js 2>/dev/null || true
 
 ## 完了チェックリスト
 
-| # | 確認項目 | 状態 |
-|---|---------|------|
-| 1 | eslint.config.mjs が存在する | |
-| 2 | .prettierrc が存在する | |
-| 3 | .prettierignore が存在する | |
-| 4 | .husky/pre-commit が存在する | |
-| 5 | lint-staged が package.json に設定されている | |
-| 6 | `npm run lint` が正常動作する | |
-| 7 | `npm run format:check` が正常動作する | |
-| 8 | pre-commit フックが動作する | |
+| #   | 確認項目                                     | 状態 |
+| --- | -------------------------------------------- | ---- |
+| 1   | eslint.config.mjs が存在する                 |      |
+| 2   | .prettierrc が存在する                       |      |
+| 3   | .prettierignore が存在する                   |      |
+| 4   | .husky/pre-commit が存在する                 |      |
+| 5   | lint-staged が package.json に設定されている |      |
+| 6   | `npm run lint` が正常動作する                |      |
+| 7   | `npm run format:check` が正常動作する        |      |
+| 8   | pre-commit フックが動作する                  |      |
 
 ## Biome 代替オプション
 

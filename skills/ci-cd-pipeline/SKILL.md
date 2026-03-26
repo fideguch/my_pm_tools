@@ -226,7 +226,7 @@ name: Stale Issue Detection
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # 毎週月曜 00:00 UTC
+    - cron: '0 0 * * 1' # 毎週月曜 00:00 UTC
 
 jobs:
   detect-stale:
@@ -270,13 +270,13 @@ jobs:
 
 ユーザーに以下のブランチ保護設定を推奨:
 
-| 設定 | 推奨値 |
-|------|--------|
-| Require status checks | CI Quality Check |
-| Require PR reviews | 1名以上 |
-| Dismiss stale reviews | 有効 |
-| Require up-to-date branch | 有効 |
-| Restrict force pushes | 有効 |
+| 設定                      | 推奨値           |
+| ------------------------- | ---------------- |
+| Require status checks     | CI Quality Check |
+| Require PR reviews        | 1名以上          |
+| Dismiss stale reviews     | 有効             |
+| Require up-to-date branch | 有効             |
+| Restrict force pushes     | 有効             |
 
 ---
 
@@ -295,21 +295,21 @@ npm run build --if-present
 
 ## 完了チェックリスト
 
-| # | 確認項目 | 状態 |
-|---|---------|------|
-| 1 | `.github/workflows/ci.yml` が存在する | |
-| 2 | `.github/workflows/pr-labeler.yml` が存在する | |
-| 3 | `.github/labeler.yml` が存在する | |
-| 4 | `.github/workflows/project-automation.yml` が存在する | |
-| 5 | `.github/workflows/stale-detection.yml` が存在する | |
-| 6 | CI が PR で正常に動作する | |
-| 7 | ブランチ保護ルールが設定されている | |
+| #   | 確認項目                                              | 状態 |
+| --- | ----------------------------------------------------- | ---- |
+| 1   | `.github/workflows/ci.yml` が存在する                 |      |
+| 2   | `.github/workflows/pr-labeler.yml` が存在する         |      |
+| 3   | `.github/labeler.yml` が存在する                      |      |
+| 4   | `.github/workflows/project-automation.yml` が存在する |      |
+| 5   | `.github/workflows/stale-detection.yml` が存在する    |      |
+| 6   | CI が PR で正常に動作する                             |      |
+| 7   | ブランチ保護ルールが設定されている                    |      |
 
 ## パッケージマネージャー別の調整
 
-| マネージャー | インストール | キャッシュ設定 |
-|-------------|------------|--------------|
-| npm | `npm ci` | `cache: 'npm'` |
-| pnpm | `pnpm install --frozen-lockfile` | pnpm/action-setup@v4 + `cache: 'pnpm'` |
-| yarn | `yarn install --frozen-lockfile` | `cache: 'yarn'` |
-| bun | `bun install --frozen-lockfile` | oven-sh/setup-bun@v2 |
+| マネージャー | インストール                     | キャッシュ設定                         |
+| ------------ | -------------------------------- | -------------------------------------- |
+| npm          | `npm ci`                         | `cache: 'npm'`                         |
+| pnpm         | `pnpm install --frozen-lockfile` | pnpm/action-setup@v4 + `cache: 'pnpm'` |
+| yarn         | `yarn install --frozen-lockfile` | `cache: 'yarn'`                        |
+| bun          | `bun install --frozen-lockfile`  | oven-sh/setup-bun@v2                   |

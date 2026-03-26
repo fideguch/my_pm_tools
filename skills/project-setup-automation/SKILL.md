@@ -94,22 +94,22 @@ curl -s -H "Authorization: bearer $PAT" https://api.github.com/graphql \
 
 GitHub UI または GraphQL API で Status フィールドに以下のオプションを設定:
 
-| # | ステータス | フェーズ |
-|---|-----------|---------|
-| 1 | Icebox | Planning |
-| 2 | 進行待ち | Planning |
-| 3 | 要件作成中 | Planning |
-| 4 | デザイン待ち | Design |
-| 5 | デザイン作成中 | Design |
-| 6 | アサイン待ち | Dev |
-| 7 | 開発待ち | Dev |
-| 8 | 開発中 | Dev |
-| 9 | コードレビュー | Dev |
-| 10 | テスト中 | Release |
-| 11 | テスト落ち | Release |
-| 12 | リリース待ち | Release |
-| 13 | リリース済み | Release |
-| 14 | Done | - |
+| #   | ステータス     | フェーズ |
+| --- | -------------- | -------- |
+| 1   | Icebox         | Planning |
+| 2   | 進行待ち       | Planning |
+| 3   | 要件作成中     | Planning |
+| 4   | デザイン待ち   | Design   |
+| 5   | デザイン作成中 | Design   |
+| 6   | アサイン待ち   | Dev      |
+| 7   | 開発待ち       | Dev      |
+| 8   | 開発中         | Dev      |
+| 9   | コードレビュー | Dev      |
+| 10  | テスト中       | Release  |
+| 11  | テスト落ち     | Release  |
+| 12  | リリース待ち   | Release  |
+| 13  | リリース済み   | Release  |
+| 14  | Done           | -        |
 
 ---
 
@@ -163,13 +163,13 @@ curl -s -H "Authorization: bearer $PAT" https://api.github.com/graphql \
 
 ### ビューのフィルタ設定（GitHub UI で手動）
 
-| ビュー | フィルタ | ソート/グループ |
-|--------|---------|----------------|
-| Product Backlog | `is:open no:parent-issue` | Priority昇順 |
-| Sprint Board | `sprint:@current` | — |
-| Sprint Table | `sprint:@current` | Assigneeグループ, Priority昇順 |
-| Roadmap | `no:parent-issue` | — |
-| My Items | `assignee:@me is:open` | Statusグループ, Priority昇順 |
+| ビュー          | フィルタ                  | ソート/グループ                |
+| --------------- | ------------------------- | ------------------------------ |
+| Product Backlog | `is:open no:parent-issue` | Priority昇順                   |
+| Sprint Board    | `sprint:@current`         | —                              |
+| Sprint Table    | `sprint:@current`         | Assigneeグループ, Priority昇順 |
+| Roadmap         | `no:parent-issue`         | —                              |
+| My Items        | `assignee:@me is:open`    | Statusグループ, Priority昇順   |
 
 ---
 
@@ -217,21 +217,21 @@ Repository Settings → Secrets and variables → Actions → New repository sec
 
 ## 最終チェックリスト
 
-| # | 確認項目 | 状態 |
-|---|---------|------|
-| 1 | 14ステータスが設定されている | |
-| 2 | Priority (P0-P4) フィールドが存在する | |
-| 3 | Estimate (Number) フィールドが存在する | |
-| 4 | Target (Text) フィールドが存在する | |
-| 5 | Sprint (Iteration) フィールドが存在する | |
-| 6 | 13ラベルが作成されている | |
-| 7 | Product Backlog ビューが存在する | |
-| 8 | Sprint Board ビューが存在する | |
-| 9 | Sprint Table ビューが存在する | |
-| 10 | Roadmap ビューが存在する | |
-| 11 | My Items ビューが存在する | |
-| 12 | Issue テンプレートが存在する | |
-| 13 | PR テンプレートが存在する | |
-| 14 | Built-in Workflows が有効 | |
-| 15 | PROJECT_TOKEN シークレットが設定されている | |
-| 16 | GitHub Actions が正常動作する | |
+| #   | 確認項目                                   | 状態 |
+| --- | ------------------------------------------ | ---- |
+| 1   | 14ステータスが設定されている               |      |
+| 2   | Priority (P0-P4) フィールドが存在する      |      |
+| 3   | Estimate (Number) フィールドが存在する     |      |
+| 4   | Target (Text) フィールドが存在する         |      |
+| 5   | Sprint (Iteration) フィールドが存在する    |      |
+| 6   | 13ラベルが作成されている                   |      |
+| 7   | Product Backlog ビューが存在する           |      |
+| 8   | Sprint Board ビューが存在する              |      |
+| 9   | Sprint Table ビューが存在する              |      |
+| 10  | Roadmap ビューが存在する                   |      |
+| 11  | My Items ビューが存在する                  |      |
+| 12  | Issue テンプレートが存在する               |      |
+| 13  | PR テンプレートが存在する                  |      |
+| 14  | Built-in Workflows が有効                  |      |
+| 15  | PROJECT_TOKEN シークレットが設定されている |      |
+| 16  | GitHub Actions が正常動作する              |      |

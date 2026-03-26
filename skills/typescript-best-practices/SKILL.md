@@ -72,6 +72,7 @@ npm install --save-dev typescript @types/node
 ### 2.2 フレームワーク別追加設定
 
 **Next.js:**
+
 ```json
 {
   "compilerOptions": {
@@ -83,6 +84,7 @@ npm install --save-dev typescript @types/node
 ```
 
 **React (Vite):**
+
 ```json
 {
   "compilerOptions": {
@@ -137,9 +139,7 @@ function createUserId(id: string): UserId {
 }
 
 // Discriminated Union で安全な状態管理
-type Result<T, E = Error> =
-  | { success: true; data: T }
-  | { success: false; error: E };
+type Result<T, E = Error> = { success: true; data: T } | { success: false; error: E };
 
 // Exhaustive check
 function assertNever(x: never): never {
@@ -219,11 +219,11 @@ export default defineConfig({
 
 ## 完了チェックリスト
 
-| # | 確認項目 | 状態 |
-|---|---------|------|
-| 1 | TypeScript がインストールされている | |
-| 2 | tsconfig.json が strict: true で設定されている | |
-| 3 | パスエイリアス (@/*) が設定されている | |
-| 4 | `npm run typecheck` が正常動作する | |
-| 5 | テストフレームワークが設定されている | |
-| 6 | any の使用が最小限に抑えられている | |
+| #   | 確認項目                                       | 状態 |
+| --- | ---------------------------------------------- | ---- |
+| 1   | TypeScript がインストールされている            |      |
+| 2   | tsconfig.json が strict: true で設定されている |      |
+| 3   | パスエイリアス (@/\*) が設定されている         |      |
+| 4   | `npm run typecheck` が正常動作する             |      |
+| 5   | テストフレームワークが設定されている           |      |
+| 6   | any の使用が最小限に抑えられている             |      |

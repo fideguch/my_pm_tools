@@ -1,0 +1,64 @@
+name: 'バグ報告 (Bug Report)'
+description: 'スクリプトやテンプレートのバグ報告'
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: '## バグ報告'
+  - type: textarea
+    id: summary
+    attributes:
+      label: 'バグの概要'
+      description: '発生している問題を簡潔に記述してください'
+      placeholder: 'setup-labels.sh 実行時にエラーが発生する'
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: '再現手順'
+      description: 'バグを再現するための手順'
+      placeholder: |
+        1. ./scripts/setup-all.sh owner/repo 1 を実行
+        2. Phase 2 でエラーが発生
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: '期待される動作'
+      description: '本来どうなるべきか'
+      placeholder: '13ラベルが正常に作成される'
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: '実際の動作'
+      description: '現在何が起きているか'
+      placeholder: 'エラーメッセージが表示される'
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: '深刻度'
+      options:
+        - P0 - スクリプトが全く動作しない
+        - P1 - 主要機能が使えない
+        - P2 - 代替手段あり
+        - P3 - 軽微な問題
+        - P4 - ドキュメントのみ
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: '環境情報'
+      description: 'OS、gh CLIバージョン、Node.jsバージョンなど'
+      placeholder: |
+        - OS: macOS 14.x
+        - gh: 2.50.0
+        - Node.js: 20.x
+    validations:
+      required: false

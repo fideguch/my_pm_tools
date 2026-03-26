@@ -26,15 +26,15 @@ main（本番）
 
 ### 1.2 ブランチ命名規則
 
-| プレフィックス | 用途 | 例 |
-|-------------|------|-----|
-| `feature/` | 新機能 | `feature/user-authentication` |
-| `fix/` | バグ修正 | `fix/login-redirect-loop` |
-| `refactor/` | リファクタリング | `refactor/api-error-handling` |
-| `docs/` | ドキュメント | `docs/api-reference` |
-| `infra/` | インフラ | `infra/ci-pipeline` |
-| `test/` | テスト追加 | `test/payment-integration` |
-| `hotfix/` | 緊急修正 | `hotfix/security-vulnerability` |
+| プレフィックス | 用途             | 例                              |
+| -------------- | ---------------- | ------------------------------- |
+| `feature/`     | 新機能           | `feature/user-authentication`   |
+| `fix/`         | バグ修正         | `fix/login-redirect-loop`       |
+| `refactor/`    | リファクタリング | `refactor/api-error-handling`   |
+| `docs/`        | ドキュメント     | `docs/api-reference`            |
+| `infra/`       | インフラ         | `infra/ci-pipeline`             |
+| `test/`        | テスト追加       | `test/payment-integration`      |
+| `hotfix/`      | 緊急修正         | `hotfix/security-vulnerability` |
 
 ---
 
@@ -52,18 +52,18 @@ main（本番）
 
 ### 2.2 Type 一覧
 
-| Type | 説明 | SemVer |
-|------|------|--------|
-| `feat` | 新機能 | MINOR |
-| `fix` | バグ修正 | PATCH |
-| `docs` | ドキュメント | - |
-| `style` | フォーマット変更（動作に影響なし） | - |
-| `refactor` | リファクタリング | - |
-| `perf` | パフォーマンス改善 | - |
-| `test` | テスト追加・修正 | - |
-| `build` | ビルド関連 | - |
-| `ci` | CI/CD変更 | - |
-| `chore` | その他の変更 | - |
+| Type       | 説明                               | SemVer |
+| ---------- | ---------------------------------- | ------ |
+| `feat`     | 新機能                             | MINOR  |
+| `fix`      | バグ修正                           | PATCH  |
+| `docs`     | ドキュメント                       | -      |
+| `style`    | フォーマット変更（動作に影響なし） | -      |
+| `refactor` | リファクタリング                   | -      |
+| `perf`     | パフォーマンス改善                 | -      |
+| `test`     | テスト追加・修正                   | -      |
+| `build`    | ビルド関連                         | -      |
+| `ci`       | CI/CD変更                          | -      |
+| `chore`    | その他の変更                       | -      |
 
 ### 2.3 例
 
@@ -99,6 +99,7 @@ export default {
 ```
 
 Husky に commit-msg フックを追加:
+
 ```bash
 echo 'npx --no -- commitlint --edit "$1"' > .husky/commit-msg
 ```
@@ -155,7 +156,7 @@ echo 'npx --no -- commitlint --edit "$1"' > .husky/commit-msg
 ```yaml
 name: 機能要望
 description: 新しい機能やの改善提案
-labels: ["feature"]
+labels: ['feature']
 body:
   - type: textarea
     id: summary
@@ -193,7 +194,7 @@ body:
 ```yaml
 name: バグ報告
 description: バグや不具合の報告
-labels: ["bug"]
+labels: ['bug']
 body:
   - type: textarea
     id: description
@@ -240,10 +241,10 @@ body:
 
 ## 完了チェックリスト
 
-| # | 確認項目 | 状態 |
-|---|---------|------|
-| 1 | ブランチ命名規則がドキュメント化されている | |
-| 2 | Conventional Commits が設定されている | |
-| 3 | PR テンプレートが存在する | |
-| 4 | Issue テンプレートが存在する | |
-| 5 | commitlint が設定されている（オプション） | |
+| #   | 確認項目                                   | 状態 |
+| --- | ------------------------------------------ | ---- |
+| 1   | ブランチ命名規則がドキュメント化されている |      |
+| 2   | Conventional Commits が設定されている      |      |
+| 3   | PR テンプレートが存在する                  |      |
+| 4   | Issue テンプレートが存在する               |      |
+| 5   | commitlint が設定されている（オプション）  |      |
