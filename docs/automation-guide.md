@@ -22,7 +22,7 @@ Project Settings → Workflows で以下の5つを有効化します。
 
 ## GitHub Actions ワークフロー
 
-`templates/workflows/` に4つのワークフローテンプレートを用意しています。
+`templates/workflows/` に5つのワークフローテンプレートを用意しています。
 
 ### 1. CI Quality Check (`ci.yml`)
 
@@ -60,6 +60,15 @@ PR と Issue のステータスを自動連動。
 - **スケジュール**: 毎週月曜 00:00 UTC
 - **検知条件**: 5日以上更新がないオープン Issue
 - **アクション**: ログ出力（コメント通知はオプション）
+
+### 5. Roadmap Date Sync (`roadmap-date-sync.yml`)
+
+Sprint（Iteration）フィールドの日付情報を読み取り、Roadmapビューとの整合性をチェック。
+
+- **トリガー**: `workflow_dispatch`（手動）、`schedule`（毎日 9:00 UTC）、Issue/PR イベント
+- **動作**: Sprint の開始日・終了日をログ出力し、GitHub Actions Summary に一覧表示
+- **注意**: 読み取り専用（日付フィールドへの書き込みは行わない）。Roadmap 表示は GitHub UI の Date fields 設定に依存
+- **前提**: `PROJECT_TOKEN` シークレットに Classic PAT を設定
 
 ---
 

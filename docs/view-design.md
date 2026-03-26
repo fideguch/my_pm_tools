@@ -1,5 +1,9 @@
 # 5ビュー設計書
 
+> **設定状況**: 全5ビューの表示フィールド・フィルタ・ソート・グループ設定は GitHub UI で設定済みです。
+> GitHub Projects V2 の GraphQL API には `updateProjectV2View` mutation が存在しないため、
+> ビュー設定は GitHub UI からの手動設定が必要です。
+
 ## ビュー一覧
 
 | # | ビュー名 | レイアウト | 用途 |

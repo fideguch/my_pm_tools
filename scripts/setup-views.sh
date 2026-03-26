@@ -1,13 +1,20 @@
 #!/bin/bash
-# 5ビュー作成スクリプト
+# 5ビュー作成＆設定ガイドスクリプト
 # Usage: ./scripts/setup-views.sh <OWNER> <PROJECT_NUMBER>
+#
+# ビュー作成後、各ビューの表示フィールド・フィルタ・ソート・グループの
+# 設定ガイドを出力します。
+#
+# 注意: GitHub Projects V2 の GraphQL API には updateProjectV2View mutation が
+# 存在しないため、フィルタ・ソート・グループ・表示フィールドの設定は
+# GitHub UI で手動設定が必要です。
 
 set -euo pipefail
 
 OWNER="${1:?Usage: $0 <OWNER> <PROJECT_NUMBER>}"
 NUMBER="${2:?Usage: $0 <OWNER> <PROJECT_NUMBER>}"
 
-echo "=== 5ビュー作成: Project #$NUMBER ==="
+echo "=== 5ビュー作成＆設定: Project #$NUMBER ==="
 
 # プロジェクトID取得
 echo "プロジェクトID取得中..."
@@ -25,7 +32,12 @@ if [ -z "$PROJECT_ID" ]; then
 fi
 echo "Project ID: $PROJECT_ID"
 
+# ---------------------------------------------------------------------------
+# ビュー作成
+# ---------------------------------------------------------------------------
 echo ""
+echo "--- ビュー作成 ---"
+
 echo "[1/5] Product Backlog (Board)..."
 gh api graphql -f query='
   mutation($pid: ID!) {
@@ -66,12 +78,58 @@ gh api graphql -f query='
     }
   }' -f pid="$PROJECT_ID" --jq '.data.createProjectV2View.projectV2View.name' 2>/dev/null || echo "  → 既に存在またはエラー"
 
+# ---------------------------------------------------------------------------
+# ビュー設定ガイド
+# ---------------------------------------------------------------------------
 echo ""
-echo "=== 完了 ==="
+echo "=== ビュー作成完了 ==="
 echo ""
-echo "【手動設定が必要な項目】各ビューのフィルタ・ソート:"
-echo "  Product Backlog: フィルタ is:open no:parent-issue / ソート Priority昇順"
-echo "  Sprint Board:    フィルタ sprint:@current"
-echo "  Sprint Table:    フィルタ sprint:@current / グループ Assignee / ソート Priority昇順"
-echo "  Roadmap:         フィルタ no:parent-issue"
-echo "  My Items:        フィルタ assignee:@me is:open / グループ Status / ソート Priority昇順"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  各ビューの設定ガイド (GitHub UI で設定 → 保存)"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "【1】Product Backlog (Board)"
+echo "  表示フィールド: Priority, Sprint, Labels, Assignees, Sub-issues progress"
+echo "  非表示:         Linked pull requests, Target, Parent issue, Milestone, Estimate"
+echo "  フィルタ:       is:open no:parent-issue"
+echo "  ソート:         Priority（昇順）"
+echo "  グループ:       なし"
+echo ""
+echo "【2】Sprint Board (Board)"
+echo "  表示フィールド: Priority, Assignees, Sub-issues progress"
+echo "  非表示:         Linked pull requests, Sprint, Labels, Target, Estimate 等"
+echo "  フィルタ:       sprint:@current"
+echo "  ソート:         なし（手動）"
+echo "  グループ:       なし"
+echo ""
+echo "【3】Sprint Table (Table)"
+echo "  表示フィールド: Status, Priority, Sprint, Assignees, Labels, Estimate"
+echo "  非表示:         Linked pull requests, Sub-issues progress, Target 等"
+echo "  フィルタ:       sprint:@current"
+echo "  ソート:         Priority（昇順）"
+echo "  グループ:       Assignee"
+echo ""
+echo "【4】Roadmap (Timeline)"
+echo "  日付フィールド: Sprint (Iteration)"
+echo "  マーカー:       Milestone, Sprint"
+echo "  フィルタ:       no:parent-issue"
+echo ""
+echo "【5】My Items (Table)"
+echo "  表示フィールド: Status, Priority, Sprint, Labels"
+echo "  非表示:         Linked pull requests, Sub-issues progress, Estimate, Target 等"
+echo "  フィルタ:       assignee:@me is:open"
+echo "  ソート:         Priority（昇順）"
+echo "  グループ:       Status"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "設定手順:"
+echo "  1. 各ビューのタブを開く"
+echo "  2. 右上の「View」ボタンをクリック"
+echo "  3. 「Fields」で表示/非表示を設定"
+echo "  4. 「Group by」「Sort by」を設定"
+echo "  5. フィルタバーにフィルタを入力"
+echo "  6. 「Save」ボタンで保存（確認ダイアログで「Save」を選択）"
+echo ""
+echo "※ GitHub Projects V2 の GraphQL API では updateProjectV2View mutation が"
+echo "  未提供のため、ビュー設定は GitHub UI からの手動設定が必要です。"

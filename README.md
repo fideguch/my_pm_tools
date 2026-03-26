@@ -13,11 +13,11 @@ GitHub Projects V2 の開発環境を一括構築する Devin プレイブック
 | 要素 | 内容 |
 |------|------|
 | **ステータス** | 14段階（Icebox → Planning → Design → Dev → Release → Done） |
-| **ビュー** | 5種（Product Backlog, Sprint Board, Sprint Table, Roadmap, My Items） |
+| **ビュー** | 6種（Issues, Product Backlog, Sprint Board, Sprint Table, Roadmap, My Items） |
 | **カスタムフィールド** | Priority (P0-P4), Sprint (1w Iteration), Estimate (Number), Target (Text) |
 | **ラベル** | 13種（Type 6 + Area 4 + Ops 3） |
 | **テンプレート** | Issue (feature/bug) + PR テンプレート |
-| **自動化** | Built-in Workflows 5 + GitHub Actions 4 |
+| **自動化** | Built-in Workflows 5 + GitHub Actions 5 |
 
 ## 前提条件
 
@@ -67,11 +67,13 @@ set-up-github-project/
 │       ├── ci.yml                     # CI 品質チェック
 │       ├── project-automation.yml     # Project 自動化
 │       ├── pr-labeler.yml             # PR 自動ラベル
-│       └── stale-detection.yml        # 滞留タスク検知
+│       ├── stale-detection.yml        # 滞留タスク検知
+│       └── roadmap-date-sync.yml      # Roadmap 日付同期
 └── docs/
     ├── workflow-definition.md         # 14ステータスワークフロー定義書
     ├── view-design.md                 # 5ビュー設計書
-    └── automation-guide.md            # 自動化ガイド
+    ├── automation-guide.md            # 自動化ガイド
+    └── USAGE.md                       # プロジェクト運用ガイド
 ```
 
 ## コーディングスキル
@@ -117,6 +119,12 @@ set-up-github-project/
 | Ops | `blocked` | #000000 | ブロッカーあり |
 | Ops | `needs-review` | #FEF2C0 | レビュー必要 |
 | Ops | `good-first-issue` | #7057FF | 初心者向け |
+
+## プロジェクト運用ガイド
+
+GitHub Projects V2 で構築されたプロジェクト管理環境の詳細な運用方法は、以下のドキュメントを参照してください。
+
+**[運用ガイド（USAGE.md）](docs/USAGE.md)** — ビューの使い方、ステータスワークフロー、Sprint運用、Roadmap活用、自動化ワークフローなど
 
 ## License
 
