@@ -82,6 +82,8 @@ GitHub Projects V2 環境一括構築 — クイックガイド
   「fideguch/my-repo にGitHub Projects環境を構築して」
   「ラベルだけ一括作成して」
   「既存のプロジェクトに足りないビューを追加して」
+  「Jira から移行したい」
+  「Sprint レポートを出して」
   「ヘルプ」
 ```
 
@@ -461,3 +463,35 @@ PR 操作に連動して関連 Issue のステータスが自動変更される:
 | PR マージ    | → Done           | 同上                        |
 
 **前提**: `PROJECT_TOKEN` シークレットと `STATUS_FIELD_ID` 環境変数が設定済みであること。
+
+### 他ツールからの移行
+
+Jira / Linear / Notion から CSV エクスポートし、一括インポート:
+
+```bash
+# Jira から移行
+./scripts/migrate-import.sh <OWNER/REPO> <PROJECT_NUMBER> jira-export.csv --format jira
+
+# Linear から移行
+./scripts/migrate-import.sh <OWNER/REPO> <PROJECT_NUMBER> linear-export.csv --format linear
+
+# プレビュー（実際には作成しない）
+./scripts/migrate-import.sh <OWNER/REPO> <PROJECT_NUMBER> tasks.csv --format generic --dry-run
+```
+
+ステータス・Priority は自動マッピングされる。タイトル重複の Issue は自動スキップ。
+
+### Sprint レポート
+
+```bash
+# 現在の Sprint レポート
+./scripts/sprint-report.sh <OWNER> <PROJECT_NUMBER>
+
+# 前回の Sprint レポート
+./scripts/sprint-report.sh <OWNER> <PROJECT_NUMBER> --sprint previous
+
+# JSON 出力（CI/Notion 連携用）
+./scripts/sprint-report.sh <OWNER> <PROJECT_NUMBER> --json
+```
+
+出力: ベロシティ（完了ポイント）、完了率、ステータス分布、Priority 分布、ブロッカー一覧。

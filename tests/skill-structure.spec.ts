@@ -1251,3 +1251,108 @@ test.describe('Automation & Operations Validation', () => {
     expect(content).toContain('project-ops.sh');
   });
 });
+
+// ============================================================
+// 13. Migration & Reporting Validation (v1.5.0)
+// ============================================================
+test.describe('Migration & Reporting Validation', () => {
+  test('migrate-import.sh exists with shebang and pipefail', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content.startsWith('#!/bin/bash')).toBe(true);
+    expect(content).toContain('set -euo pipefail');
+  });
+
+  test('migrate-import.sh supports --dry-run flag', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content).toContain('--dry-run');
+    expect(content).toContain('DRY_RUN');
+  });
+
+  test('migrate-import.sh supports jira, linear, notion, generic formats', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content).toContain('jira');
+    expect(content).toContain('linear');
+    expect(content).toContain('notion');
+    expect(content).toContain('generic');
+  });
+
+  test('migrate-import.sh has status mapping tables', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content).toContain('JIRA_STATUS_MAP');
+    expect(content).toContain('LINEAR_STATUS_MAP');
+    expect(content).toContain('JIRA_PRIORITY_MAP');
+  });
+
+  test('migrate-import.sh has duplicate detection', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content).toContain('duplicate');
+  });
+
+  test('sprint-report.sh exists with shebang and pipefail', () => {
+    const content = readFile('scripts/sprint-report.sh');
+    expect(content.startsWith('#!/bin/bash')).toBe(true);
+    expect(content).toContain('set -euo pipefail');
+  });
+
+  test('sprint-report.sh supports --sprint flag', () => {
+    const content = readFile('scripts/sprint-report.sh');
+    expect(content).toContain('--sprint');
+    expect(content).toContain('current');
+    expect(content).toContain('previous');
+  });
+
+  test('sprint-report.sh supports --json flag', () => {
+    const content = readFile('scripts/sprint-report.sh');
+    expect(content).toContain('--json');
+    expect(content).toContain('JSON_OUTPUT');
+  });
+
+  test('sprint-report.sh calculates velocity', () => {
+    const content = readFile('scripts/sprint-report.sh');
+    expect(content).toContain('Velocity');
+    expect(content).toContain('estimate_completed');
+  });
+
+  test('sprint-report.sh detects blocked items', () => {
+    const content = readFile('scripts/sprint-report.sh');
+    expect(content).toContain('blocked');
+    expect(content).toContain('Blocked');
+  });
+
+  test('SKILL.md mentions migrate-import.sh', () => {
+    const content = readFile('SKILL.md');
+    expect(content).toContain('migrate-import.sh');
+  });
+
+  test('SKILL.md mentions sprint-report.sh', () => {
+    const content = readFile('SKILL.md');
+    expect(content).toContain('sprint-report.sh');
+  });
+
+  test('USAGE.md has migration section', () => {
+    const content = readFile('docs/USAGE.md');
+    expect(content).toContain('移行');
+    expect(content).toContain('Jira');
+    expect(content).toContain('Linear');
+    expect(content).toContain('Notion');
+  });
+
+  test('USAGE.md has Sprint report section', () => {
+    const content = readFile('docs/USAGE.md');
+    expect(content).toContain('Sprint レポート');
+    expect(content).toContain('ベロシティ');
+  });
+
+  test('README.md file tree includes migration and report scripts', () => {
+    const content = readFile('README.md');
+    expect(content).toContain('migrate-import.sh');
+    expect(content).toContain('sprint-report.sh');
+  });
+
+  test('CHANGELOG.md has v1.5.0 entry', () => {
+    const content = readFile('CHANGELOG.md');
+    expect(content).toContain('[1.5.0]');
+    expect(content).toContain('migrate-import.sh');
+    expect(content).toContain('sprint-report.sh');
+  });
+});

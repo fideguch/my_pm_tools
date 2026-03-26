@@ -108,11 +108,33 @@ Repository Settings → Secrets and variables → Actions → New repository sec
 ### 2. ワークフローファイル配置
 
 ```bash
-# テンプレートからコピー
+# 自動配置（推奨）— プレースホルダー自動置換 + コミット + プッシュ
+./scripts/setup-templates.sh <OWNER/REPO> <PROJECT_NUMBER>
+
+# または手動コピー
 cp templates/workflows/*.yml .github/workflows/
 git add .github/workflows/
 git commit -m "feat: add GitHub Actions workflows"
 git push
+```
+
+### 移行ツール (`migrate-import.sh`)
+
+Jira / Linear / Notion からの CSV インポート。Issue 一括作成 + Project 追加 + フィールド設定。
+
+```bash
+./scripts/migrate-import.sh <OWNER/REPO> <NUMBER> export.csv --format jira
+./scripts/migrate-import.sh <OWNER/REPO> <NUMBER> export.csv --format linear --dry-run
+```
+
+### Sprint レポート (`sprint-report.sh`)
+
+Sprint のベロシティ・完了率・ブロッカーを自動集計。
+
+```bash
+./scripts/sprint-report.sh <OWNER> <NUMBER>              # 現在の Sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --json        # JSON 出力
+./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint previous  # 前回の Sprint
 ```
 
 ### 3. ブランチ保護ルール設定

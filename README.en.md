@@ -55,6 +55,27 @@ Run the `!setup_github_project` macro in Devin to start the interactive setup.
 ./scripts/setup-templates.sh <OWNER/REPO> <NUM>  # Templates + workflows
 ```
 
+### Migration from Other Tools
+
+```bash
+# Import from Jira CSV
+./scripts/migrate-import.sh <OWNER/REPO> <NUMBER> jira-export.csv --format jira
+
+# Import from Linear CSV
+./scripts/migrate-import.sh <OWNER/REPO> <NUMBER> linear-export.csv --format linear
+
+# Preview without creating (dry run)
+./scripts/migrate-import.sh <OWNER/REPO> <NUMBER> tasks.csv --dry-run
+```
+
+### Sprint Reports
+
+```bash
+./scripts/sprint-report.sh <OWNER> <NUMBER>               # Current sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint previous  # Previous sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --json         # JSON output
+```
+
 ### Project Operations (Post-Setup)
 
 ```bash

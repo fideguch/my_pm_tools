@@ -91,7 +91,9 @@ set-up-github-project/
 │   ├── setup-status.sh                # Status 14オプション設定
 │   ├── setup-views.sh                 # 5ビュー作成
 │   ├── setup-templates.sh             # テンプレート＆ワークフロー自動配置
-│   └── project-ops.sh                 # プロジェクト運用操作（Issue/PR追加・カード移動）
+│   ├── project-ops.sh                 # プロジェクト運用操作（Issue/PR追加・カード移動）
+│   ├── migrate-import.sh              # Jira/Linear/Notion CSV 移行インポート
+│   └── sprint-report.sh               # Sprint レポート生成（ベロシティ・完了率）
 ├── skills/
 │   ├── code-quality/SKILL.md          # ESLint + Prettier + Husky + lint-staged 導入
 │   ├── ci-cd-pipeline/SKILL.md        # GitHub Actions CI/CD 品質パイプライン構築

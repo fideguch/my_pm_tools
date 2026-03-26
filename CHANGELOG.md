@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2026-03-27
+
+### Added
+
+- `scripts/migrate-import.sh` — CSV import from Jira, Linear, Notion, or generic format. Auto-creates Issues, adds to Project, sets Status/Priority/Estimate. Supports `--dry-run` and duplicate detection.
+- `scripts/sprint-report.sh` — Sprint velocity, completion rate, status breakdown, priority distribution, and blocker detection. Supports `--sprint current|previous|<name>` and `--json` output.
+- Migration guide in docs/USAGE.md (Jira/Linear/Notion export procedures + mapping tables)
+- Sprint report section in docs/USAGE.md (velocity tracking best practices)
+- Migration and report tool sections in docs/automation-guide.md
+
+### Changed
+
+- SKILL.md Help Command updated with migration and report command examples
+- SKILL.md operations section expanded with migrate-import.sh and sprint-report.sh usage
+
 ## [1.4.0] - 2026-03-27
 
 ### Added
