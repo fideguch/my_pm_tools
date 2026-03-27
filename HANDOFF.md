@@ -1,112 +1,114 @@
-# Handoff: GitHub Project Manager v2.1.0
+# Handoff: GitHub Project Manager v3.0.0
 
 ## 現在の状態
 
-- **リポジトリ**: https://github.com/fideguch/my_pm_tools (旧 set-up-github-project)
+- **リポジトリ**: https://github.com/fideguch/my_pm_tools
 - **リモート**: `git@github.com:fideguch/my_pm_tools.git` (SSH)
 - **ブランチ**: main
-- **テスト**: 231 passed (2.6s)
+- **最新コミット**: `ae0f32f` feat: add MCP Server — 6 tools for AI agent integration (ADR-007)
+- **テスト**: 293 passed (3.4s)
 - **品質**: lint + typecheck + format:check 全パス
-- **評価スコア**: 3.53/5.00 (世界基準10次元評価、20ツール中11位)
+- **ビルド**: `npm run build` 成功
+- **評価スコア**: 3.53/5.00 → MCP 実装済み（再評価で 3.83+ 見込み）
 
 ## セッションで実施した作業
 
-### Phase 1-6: v1.0→v2.0 (前セッション)
+### Phase 8: MCP Server 実装（v3.0.0）— 今回のセッション
 
-前セッションで v1.0 → v2.0 までの6フェーズを完了。詳細は git log 参照。
+#### 8-0: 公開安全性監査
 
-### Phase 7: Project Knowledge Architecture (v2.1) — 今回のセッション
+- リポジトリ全体のセキュリティ監査実施 → **A評価（安全）**
+- `.gitignore` に `.env*` と `.claude/` を防御的に追加
+- ハードコード秘密鍵: なし、個人情報: 公開 GitHub ユーザー名のみ
 
-#### 7-1: 世界基準リサーチ & 知識管理設計
+#### 8-1: North Star 矛盾の解決
 
-- 30+の高信頼ソースを調査（Amazon Working Backwards, Nygard ADR, Fowler Context Engineering, Codified Context 論文, SPACE Framework 等）
-- 3層メモリアーキテクチャ（Hot/Warm/Cold）を設計
-- ADR（Architecture Decision Record）+ Deprecation Protocol を策定
+- Non-Goals「Slack/Teams 連携の自前実装はしない」と P05-P08 の矛盾を発見
+- **解決**: v1 = MCP core API 層のみ（North Star 尊重）、Slack/Google は v2 以降
+- ADR-007 作成、DECISION-LOG 更新（P05/P06 を deferred に変更、P07/P08 を ADR-007 で実現）
 
-#### 7-2: メモリシステム構築（11ファイル）
+#### 8-2: MCP Server 基盤構築
 
-- `memory/north-star.md` — 戦略アンカー（Mission, Non-Goals, Strategic Filter）
-- `memory/DECISION-LOG.md` — 意思決定サマリーテーブル（6件 active + 4件 proposed）
-- `memory/decisions/ADR-001〜006` — 主要決定の ADR 化（Rejected Alternatives 付き）
-- `memory/user_preferences.md` — ユーザー嗜好
-- `memory/project_learnings.md` — 技術・プロセスの学び
-- `memory/MEMORY.md` — マスターインデックス
+- 依存パッケージ: `@modelcontextprotocol/sdk` v1.28.0, `@octokit/graphql` v9, `zod` v4
+- `tsconfig.build.json` 新規作成、`tsconfig.json` に `src/` 追加
+- `src/types/index.ts` — 型定義（ProjectV2, FieldNode, ItemNode, SprintReport 等）
+- `src/graphql/client.ts` — @octokit/graphql クライアント（GITHUB_TOKEN 認証）
+- `src/graphql/queries.ts` — 4つの GraphQL クエリ（project-ops.sh/sprint-report.sh から移植）
+- `src/graphql/mutations.ts` — 2つの GraphQL ミューテーション
+- `src/schemas/index.ts` — 6つの Zod スキーマ
+- `package.json` に `"type": "module"`, `bin`, `build` script 追加
 
-#### 7-3: CLAUDE.md 強化
+#### 8-3: 6 MCP ツール実装
 
-- Memory Architecture（3層）セクション追加
-- Strategic Alignment Check 手順追加
-- Deprecation Protocol（CRITICAL）追加
-- Decision Classification（Bezos Type1/Type2）追加
+| ツール                  | ファイル                     | 元スクリプト                           |
+| ----------------------- | ---------------------------- | -------------------------------------- |
+| `project_list_fields`   | `src/tools/list-fields.ts`   | project-ops.sh `list-fields`           |
+| `project_list_items`    | `src/tools/list-items.ts`    | project-ops.sh `list-items`            |
+| `project_add_item`      | `src/tools/add-item.ts`      | project-ops.sh `add-issue/add-pr`      |
+| `project_move_status`   | `src/tools/move-status.ts`   | project-ops.sh `move`                  |
+| `project_set_priority`  | `src/tools/set-priority.ts`  | project-ops.sh `set-priority`          |
+| `project_sprint_report` | `src/tools/sprint-report.ts` | sprint-report.sh (Python → TypeScript) |
 
-#### 7-4: 世界基準10次元競合評価
+- `src/tools/index.ts` — registerTool で6ツールを登録
+- `src/server.ts` — McpServer ファクトリ（テスト用に分離）
+- `src/index.ts` — stdio エントリポイント（shebang 付き）
 
-- 33ツール/スキルをリサーチ（エンタープライズ PM、AI ネイティブ PM、GitHub ネイティブ、Claude Code PM スキル集、OSS PM 自動化）
-- SPACE + Gartner + Forrester + AI Agent Evaluation + DX Core 3 + CNCF Maturity を統合した10次元評価フレームワークを策定
-- 20ツールを並列スコアリング
+#### 8-4: テスト追加（+62 テスト）
 
-## 評価結果サマリー
+- `tests/mcp/schemas.spec.ts` — Zod スキーマ検証（17テスト）
+- `tests/mcp/server.spec.ts` — サーバーライフサイクル（3テスト）
+- `tests/mcp/tools/*.spec.ts` — 6ツール別テスト（GraphQL モック、27テスト）
+- `tests/skill-structure.spec.ts` — MCP 構造検証セクション追加（15テスト）
+- 既存テストの ESM 対応修正（`__dirname` → `fileURLToPath`）
 
-| 次元                  | スコア   | 備考                                                      |
-| --------------------- | -------- | --------------------------------------------------------- |
-| Workflow Completeness | 3.5      | 3モードで網羅、ただしエピック/依存関係/OKR 欠如           |
-| AI Intelligence       | 2.5      | スクリプトは AI ゼロ。SKILL.md でホスト LLM に委任        |
-| DX & Flow             | 4.5      | 最大の強み。ターミナル完結、コンテキストスイッチなし      |
-| Reliability           | 4.0      | 冪等、graceful degradation、dry-run                       |
-| Integration           | 3.5      | GitHub 深い統合 + CSV インポート。MCP/Slack/Google 未対応 |
-| Time-to-Value         | 4.0      | 1コマンド環境構築 + 1,394行ドキュメント                   |
-| Analytics             | 3.0      | Sprint レポートのみ。バーンダウン/サイクルタイムなし      |
-| Maturity              | 3.5      | 231テスト + CI/CD。スクリプト動作テスト不在               |
-| Lock-in Risk          | 4.5      | OSS + GitHub 標準 API                                     |
-| Safety                | 4.0      | 認証確認 + 冪等。破壊的操作の確認一部不足                 |
-| **総合**              | **3.53** | **20ツール中11位。Claude Code PM スキル中 実質 No.1**     |
+#### 8-5: ドキュメント更新
 
-## 最大レバレッジ（次の改善候補）
+- README.md / README.en.md — MCP Server セクション追加、テスト数更新
+- CLAUDE.md — `src/` 構造追加、Tech Stack に MCP Server 追加、テスト数更新
+- ADR-007 作成、DECISION-LOG 更新、MEMORY.md 更新
 
-| 施策                                             | 影響次元          | 予想効果                |
-| ------------------------------------------------ | ----------------- | ----------------------- |
-| **MCP Server 実装**（Slack/Google/Copilot 連携） | AI +1.5, Int +0.5 | 総合 3.53→3.83          |
-| バーンダウン + サイクルタイム追加                | Analytics +1.5    | 総合 3.53→3.65          |
-| スクリプト動作 E2E テスト追加                    | Maturity +1.0     | 総合 3.53→3.61          |
-| 上記3つ全部                                      | 複合              | 総合 → **3.95** (Top 6) |
+## メトリクス
 
-## 最終メトリクス
-
-| 指標           | 値                            |
-| -------------- | ----------------------------- |
-| テスト         | 231 件                        |
-| スクリプト     | 9 本 (1,498 行)               |
-| 総行数         | ~10,000 行                    |
-| ファイル       | 69 (リポジトリ) + 11 (メモリ) |
-| SKILL.md       | 370 行 (3モード構成)          |
-| USAGE.md       | 606 行                        |
-| メモリファイル | 11 (ADR 6 + 管理 5)           |
-| テスト実行時間 | 2.6 秒                        |
-| 世界評価スコア | 3.53/5.00 (20ツール中11位)    |
+| 指標           | v2.1.0          | v3.0.0                    |
+| -------------- | --------------- | ------------------------- |
+| テスト         | 231 件          | **293 件** (+62)          |
+| スクリプト     | 9 本 (1,498 行) | 9 本 (1,498 行)           |
+| MCP ツール     | 0               | **6 ツール**              |
+| TypeScript src | 0 行            | **~800 行** (13 ファイル) |
+| 総行数         | ~10,000 行      | **~12,400 行**            |
+| ADR            | 6 件            | **7 件**                  |
+| テスト実行時間 | 2.6 秒          | 3.4 秒                    |
 
 ## 次のセッションでやること
 
-### 最優先: MCP Server 実装の計画策定（P05-P08）
+### 優先度 1: 評価スコア再計算
 
-ユーザーが明確に要望した「多様な接続ができるようにしたい」を実現する。
+MCP Server 実装後のスコアを再評価する:
 
-**対象接続先:**
+- AI Intelligence: 2.5 → 4.0 (MCP 経由で AI エージェントから操作可能に)
+- Integration: 3.5 → 4.0 (MCP プロトコル対応)
+- 目標: 3.53 → **3.83+**
 
-1. **Slack** — Sprint レポートやブロッカー通知をチャンネルに送信
-2. **Google Workspace** — Calendar（Sprint 日程）、Sheets（メトリクス蓄積）、Docs（Sprint 振り返り）
-3. **Cloud Copilot 系** — GitHub Copilot / Claude Code / 他の AI エージェントから MCP 経由で操作
-4. **GitHub MCP Server** — 公式 GitHub MCP（2026-01 GA）との連携・補完
+### 優先度 2: バーンダウン + サイクルタイム（Analytics 強化）
 
-**進め方:**
+- sprint-report.sh / sprint-report.ts にバーンダウンチャートデータ追加
+- サイクルタイム（Issue オープン → Done の日数）計算
+- 影響: Analytics 3.0 → 4.5、総合 +0.15
 
-1. `memory/north-star.md` を読み、Mission との整合を確認
-2. `memory/DECISION-LOG.md` の P05-P08 を確認
-3. `/mcp-server-patterns` スキルで最新の MCP SDK ドキュメントを取得
-4. `/plan` モードで MCP Server の設計・実装計画を策定
-5. 計画承認後、worktree で実装開始
+### 優先度 3: スクリプト動作 E2E テスト
 
-**参考:**
+- 現在のテストは構造/内容検証のみ
+- setup-all.sh, project-ops.sh の実際の動作テスト（モック GitHub API）
+- 影響: Maturity 3.5 → 4.5、総合 +0.10
 
-- 現在のスコア: 3.53/5.00 → MCP 実装後の目標: 3.83+
-- `mcp-server-patterns` スキルを活用（Node/TypeScript SDK, Zod validation, stdio vs Streamable HTTP）
-- 既存スクリプト (project-ops.sh, sprint-report.sh) の機能を MCP tools として公開する設計
+### 優先度 4: CI/CD にビルドステップ追加
+
+- `.github/workflows/ci.yml` に `npm run build` を追加
+- MCP Server のビルド成功を CI で保証
+
+### 将来検討（v2 以降）
+
+- **Slack 連携** (P05): ADR-007 で deferred。MCP core 安定後に検討
+- **Google Workspace 連携** (P06): 同上
+- **npm パッケージ化** (P01): `npx github-project-manager` で MCP Server を起動
+- **Streamable HTTP transport**: リモートクライアント対応
