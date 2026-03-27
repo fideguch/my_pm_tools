@@ -78,6 +78,42 @@ npm run format                    # Auto-format all files
 shellcheck scripts/*.sh           # Validate shell scripts
 ```
 
+## Memory Architecture (3-Layer)
+
+This project uses a structured knowledge management system to maintain strategic alignment across sessions.
+
+| Layer    | Location                          | Purpose                                             | Size Limit     |
+| -------- | --------------------------------- | --------------------------------------------------- | -------------- |
+| **Hot**  | CLAUDE.md + MEMORY.md             | Always loaded. Mission, active rules, current state | 200 lines each |
+| **Warm** | memory/decisions/, memory/\*.md   | Task-linked. ADRs, preferences, learnings           | No limit       |
+| **Cold** | HANDOFF.md, docs/, Sprint history | On-demand archive. Past sessions, detailed docs     | No limit       |
+
+### Strategic Alignment Check
+
+Before proposing new features or direction changes:
+
+1. Read `memory/north-star.md` — does this serve the Mission?
+2. Check `memory/DECISION-LOG.md` — was this already decided or rejected?
+3. Verify against Non-Goals — does this conflict with what we explicitly don't do?
+
+### Deprecation Protocol (CRITICAL)
+
+When the user abandons a decision, direction, or feature:
+
+1. **Never delete** the ADR — mark status as `abandoned` or `superseded`
+2. **Record the reason** in 1-2 sentences (why it was stopped)
+3. **Update** `memory/DECISION-LOG.md` summary table
+4. **Remove** related content from this CLAUDE.md file
+5. **If replaced**: create new ADR, set old ADR's `superseded_by` field
+6. **Verify** no stale references remain in Hot Memory layer
+
+This prevents "memory pollution" where outdated decisions mislead future sessions.
+
+### Decision Classification (Bezos Framework)
+
+- **Type 1** (one-way door): Irreversible. Require careful deliberation and new ADR to reverse.
+- **Type 2** (two-way door): Reversible. Can be changed cheaply. Decide fast with ~70% information.
+
 ## GitHub
 
 - Remote: `git@github.com:fideguch/my_pm_tools.git`
