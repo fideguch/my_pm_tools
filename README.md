@@ -168,6 +168,34 @@ npm run quality     # lint + typecheck + format:check
 
 前提: Node.js 20+, ShellCheck（オプション）。詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照。
 
+## PM Tool Suite
+
+このリポジトリは、Claude Code で PM ワークフローを自動化する5つのツールスイートの一部です。
+
+| #   | Skill                 | Purpose                        | Repo                                                                                |
+| --- | --------------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
+| 1   | **my_pm_tools**       | **GitHub Projects V2 管理**    | **this repo**                                                                       |
+| 2   | requirements_designer | 要件定義 + Figma UI生成        | [fideguch/requirements_designer](https://github.com/fideguch/requirements_designer) |
+| 3   | speckit-bridge        | 要件→仕様変換（品質ゲート≥70） | [fideguch/speckit-bridge](https://github.com/fideguch/speckit-bridge)               |
+| 4   | pm-data-analysis      | GAFA品質データ分析             | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis)           |
+| 5   | pm-ad-analysis        | 全自動広告運用（5チャネル）    | [fideguch/pm_ad_analysis](https://github.com/fideguch/pm_ad_analysis)               |
+
+### Pipeline
+
+```
+requirements_designer → speckit-bridge → my_pm_tools (project tracking)
+                              |
+                    pm-data-analysis ← pm-ad-analysis
+```
+
+### Recommended Install Order
+
+1. **my_pm_tools** (基盤 — GitHub Projects 環境構築)
+2. **requirements_designer** (上流 — 要件定義)
+3. **speckit-bridge** (変換 — 要件→仕様)
+4. **pm-data-analysis** (分析 — データ駆動意思決定)
+5. **pm-ad-analysis** (広告 — マルチチャネル最適化)
+
 ## License
 
 ISC License. See [LICENSE](LICENSE) for details.
