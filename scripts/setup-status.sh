@@ -1,35 +1,60 @@
 #!/bin/bash
-# Status フィールド 14オプション設定スクリプト
-# Usage: ./scripts/setup-status.sh <OWNER> <PROJECT_NUMBER>
+# Status フィールド設定スクリプト
+# Usage: ./scripts/setup-status.sh <OWNER> <PROJECT_NUMBER> [--lite]
 #
-# GitHub Projects V2 の Status フィールドに14ステータスオプションを設定する。
+# GitHub Projects V2 の Status フィールドにステータスオプションを設定する。
+# Full: 14ステータス / Lite: 8ステータス（--lite フラグ）
 # Status は built-in フィールドのため gh CLI での直接操作に制限がある。
 # このスクリプトは GraphQL API を使って設定を試行し、
 # 失敗した場合は手動設定ガイドを出力する。
 
 set -euo pipefail
 
-OWNER="${1:?Usage: $0 <OWNER> <PROJECT_NUMBER>}"
-NUMBER="${2:?Usage: $0 <OWNER> <PROJECT_NUMBER>}"
+OWNER="${1:?Usage: $0 <OWNER> <PROJECT_NUMBER> [--lite]}"
+NUMBER="${2:?Usage: $0 <OWNER> <PROJECT_NUMBER> [--lite]}"
 
-STATUSES=(
-  "Icebox"
-  "進行待ち"
-  "要件作成中"
-  "デザイン待ち"
-  "デザイン作成中"
-  "アサイン待ち"
-  "開発待ち"
-  "開発中"
-  "コードレビュー"
-  "テスト中"
-  "テスト落ち"
-  "リリース待ち"
-  "リリース済み"
-  "Done"
-)
+# Parse --lite flag
+LITE=false
+shift 2
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --lite) LITE=true; shift ;;
+    *) echo "Unknown option: $1"; exit 1 ;;
+  esac
+done
 
-echo "=== Status 14オプション設定: Project #$NUMBER ==="
+if [ "$LITE" = true ]; then
+  STATUSES=(
+    "Icebox"
+    "Backlog"
+    "要件作成中"
+    "デザイン作成中"
+    "開発中"
+    "コードレビュー"
+    "テスト中"
+    "Done"
+  )
+else
+  STATUSES=(
+    "Icebox"
+    "進行待ち"
+    "要件作成中"
+    "デザイン待ち"
+    "デザイン作成中"
+    "アサイン待ち"
+    "開発待ち"
+    "開発中"
+    "コードレビュー"
+    "テスト中"
+    "テスト落ち"
+    "リリース待ち"
+    "リリース済み"
+    "Done"
+  )
+fi
+
+STATUS_COUNT=${#STATUSES[@]}
+echo "=== Status ${STATUS_COUNT}オプション設定: Project #$NUMBER ==="
 
 # プロジェクトIDとStatusフィールド情報を取得
 echo "プロジェクト情報取得中..."
@@ -91,7 +116,7 @@ echo "$EXISTING_OPTIONS" | while read -r opt; do echo "  - $opt"; done
 
 # 不足オプションを特定
 echo ""
-echo "14ステータスの設定状況:"
+echo "${STATUS_COUNT}ステータスの設定状況:"
 MISSING=()
 for status in "${STATUSES[@]}"; do
   if echo "$EXISTING_OPTIONS" | grep -qF "$status"; then
@@ -104,7 +129,7 @@ done
 
 if [ ${#MISSING[@]} -eq 0 ]; then
   echo ""
-  echo "=== 全14ステータスが設定済みです ==="
+  echo "=== 全${STATUS_COUNT}ステータスが設定済みです ==="
   exit 0
 fi
 

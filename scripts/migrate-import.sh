@@ -11,6 +11,13 @@
 #   ./scripts/migrate-import.sh owner/repo 1 jira-export.csv --format jira
 #   ./scripts/migrate-import.sh owner/repo 1 linear-export.csv --format linear --dry-run
 #   ./scripts/migrate-import.sh owner/repo 1 tasks.csv --format generic
+#
+# CSV Format Compatibility:
+#   Jira Cloud CSV export — verified 2026-03
+#   Linear CSV export — verified 2026-03
+#   Notion database CSV export — verified 2026-03
+# WARNING: Export column names may change with platform updates.
+#          If import fails, check column mapping in parse_csv().
 
 set -euo pipefail
 

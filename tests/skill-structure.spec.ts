@@ -437,13 +437,13 @@ test.describe('Shell Script Validation', () => {
     });
   }
 
-  test('setup-labels.sh creates exactly 13 labels', () => {
+  test('setup-labels.sh creates exactly 18 labels (13 full + 5 lite)', () => {
     const content = readFile('scripts/setup-labels.sh');
     const labelCreateCount = (content.match(/gh label create/g) || []).length;
-    expect(labelCreateCount).toBe(13);
+    expect(labelCreateCount).toBe(18);
   });
 
-  test('setup-labels.sh has progress indicators [1/13] to [13/13]', () => {
+  test('setup-labels.sh has progress indicators [1/13] to [13/13] in full mode', () => {
     const content = readFile('scripts/setup-labels.sh');
     expect(content).toContain('[1/13]');
     expect(content).toContain('[13/13]');
@@ -1559,5 +1559,142 @@ test.describe('MCP Server Structure Validation', () => {
     const mutations = readFile('src/graphql/mutations.ts');
     expect(mutations).toContain('AddProjectItem');
     expect(mutations).toContain('UpdateItemField');
+  });
+});
+
+// ============================================================
+// 16. Lite Mode Validation (--lite flag)
+// ============================================================
+test.describe('Lite Mode Validation', () => {
+  test('setup-all.sh accepts --lite flag', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toContain('--lite');
+    expect(content).toContain('LITE_FLAG');
+  });
+
+  test('setup-all.sh propagates --lite to setup-status.sh', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toMatch(/setup-status\.sh.*\$LITE_FLAG/);
+  });
+
+  test('setup-all.sh propagates --lite to setup-labels.sh', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toMatch(/setup-labels\.sh.*\$LITE_FLAG/);
+  });
+
+  test('setup-all.sh propagates --lite to setup-views.sh', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toMatch(/setup-views\.sh.*\$LITE_FLAG/);
+  });
+
+  test('setup-all.sh displays mode indicator (Full/Lite)', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toContain('MODE="Full"');
+    expect(content).toContain('MODE="Lite"');
+  });
+
+  test('setup-status.sh defines exactly 8 lite statuses', () => {
+    const content = readFile('scripts/setup-status.sh');
+    const liteStatuses = [
+      'Icebox',
+      'Backlog',
+      '要件作成中',
+      'デザイン作成中',
+      '開発中',
+      'コードレビュー',
+      'テスト中',
+      'Done',
+    ];
+    for (const status of liteStatuses) {
+      expect(content).toContain(status);
+    }
+    // Verify lite block has exactly 8 entries by checking the array between LITE=true and the else
+    const liteSection = content.split('if [ "$LITE" = true ]')[1]?.split('else')[0] ?? '';
+    const liteStatusCount = (liteSection.match(/^\s+"[^"]+"\s*$/gm) || []).length;
+    expect(liteStatusCount).toBe(8);
+  });
+
+  test('setup-labels.sh defines exactly 5 lite labels', () => {
+    const content = readFile('scripts/setup-labels.sh');
+    const liteLabels = ['feature', 'bug', 'chore', 'frontend', 'backend'];
+    // Verify lite mode section contains all 5 labels
+    const liteSection = content.split('if [ "$LITE" = true ]')[1]?.split('else')[0] ?? '';
+    for (const label of liteLabels) {
+      expect(liteSection).toContain(`"${label}"`);
+    }
+    const liteLabelCount = (liteSection.match(/gh label create/g) || []).length;
+    expect(liteLabelCount).toBe(5);
+  });
+
+  test('setup-labels.sh has progress indicators [1/5] to [5/5] in lite mode', () => {
+    const content = readFile('scripts/setup-labels.sh');
+    expect(content).toContain('[1/5]');
+    expect(content).toContain('[5/5]');
+  });
+
+  test('setup-views.sh defines exactly 3 lite views', () => {
+    const content = readFile('scripts/setup-views.sh');
+    const liteViews = ['Sprint Board', 'Backlog', 'My Items'];
+    // Extract the lite view creation section between "# Lite mode: 3 views" comment and "else"
+    const liteMatch = content.match(/# Lite mode: 3 views[\s\S]*?\nelse\n/);
+    expect(liteMatch).not.toBeNull();
+    const liteSection = liteMatch![0];
+    for (const view of liteViews) {
+      expect(liteSection).toContain(view);
+    }
+    // Count mutation calls (input: { projectId patterns) to avoid double-counting jq paths
+    const liteViewCount = (liteSection.match(/createProjectV2View\(input:/g) || []).length;
+    expect(liteViewCount).toBe(3);
+  });
+
+  test('setup-views.sh has [1/3] to [3/3] progress in lite mode', () => {
+    const content = readFile('scripts/setup-views.sh');
+    expect(content).toContain('[1/3]');
+    expect(content).toContain('[3/3]');
+  });
+
+  test('setup-status.sh parses --lite flag correctly', () => {
+    const content = readFile('scripts/setup-status.sh');
+    expect(content).toContain('LITE=false');
+    expect(content).toContain('--lite) LITE=true');
+  });
+
+  test('setup-labels.sh parses --lite flag correctly', () => {
+    const content = readFile('scripts/setup-labels.sh');
+    expect(content).toContain('LITE=false');
+    expect(content).toContain('--lite) LITE=true');
+  });
+
+  test('setup-views.sh parses --lite flag correctly', () => {
+    const content = readFile('scripts/setup-views.sh');
+    expect(content).toContain('LITE=false');
+    expect(content).toContain('--lite) LITE=true');
+  });
+
+  test('setup-all.sh shows lite summary in completion output', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toContain('8オプション設定');
+    expect(content).toContain('5ラベル');
+    expect(content).toContain('3ビュー');
+  });
+
+  test('setup-all.sh usage comment includes --lite', () => {
+    const content = readFile('scripts/setup-all.sh');
+    expect(content).toMatch(/Usage:.*\[--lite\]/);
+  });
+
+  test('setup-status.sh usage comment includes --lite', () => {
+    const content = readFile('scripts/setup-status.sh');
+    expect(content).toMatch(/Usage:.*\[--lite\]/);
+  });
+
+  test('setup-labels.sh usage comment includes --lite', () => {
+    const content = readFile('scripts/setup-labels.sh');
+    expect(content).toMatch(/Usage:.*\[--lite\]/);
+  });
+
+  test('setup-views.sh usage comment includes --lite', () => {
+    const content = readFile('scripts/setup-views.sh');
+    expect(content).toMatch(/Usage:.*\[--lite\]/);
   });
 });

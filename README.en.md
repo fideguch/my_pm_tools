@@ -14,6 +14,21 @@ A PM assistant skill for GitHub Projects V2. Covers environment setup, daily ope
 | **Mode B: Operations** ★ | Issue/PR creation, status changes, backlog management | `project-ops.sh` + natural language                   |
 | **Mode C: Analytics**    | Sprint reports, velocity tracking                     | `sprint-report.sh`                                    |
 
+### Lite Mode (for small teams)
+
+Use the `--lite` flag to set up a streamlined configuration for 1-3 person teams:
+
+```bash
+./scripts/setup-all.sh <OWNER/REPO> <PROJECT_NUMBER> --lite
+```
+
+| Config         | Statuses | Views | Labels | Recommended Team Size |
+| -------------- | -------- | ----- | ------ | --------------------- |
+| Lite           | 8        | 3     | 5      | 1-3 people            |
+| Full (default) | 14       | 6     | 13     | 4+ people             |
+
+You can migrate from Lite to Full at any time by re-running `setup-all.sh` without `--lite`.
+
 On first launch, the skill auto-detects project state: unconfigured → Mode A, configured → Mode B. Project info is saved to `.github-project-config.json` for instant reconnection.
 
 ## Prerequisites
