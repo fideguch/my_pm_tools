@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-03-28
+
+### Added
+
+- `--lite` flag for small teams (1-3 people): 8 statuses, 3 views, 5 labels
+- Lite mode comparison table in README.md / README.en.md
+- Lite mode validation tests (18 test cases)
+- `--lite` status mapping in migrate-import.sh
+
 ## [2.0.0] - 2026-03-27
 
 ### Changed

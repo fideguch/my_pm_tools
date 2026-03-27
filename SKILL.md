@@ -2,7 +2,7 @@
 name: github_project_manager
 description: >-
   GitHub Projects V2 のPM支援スキル。
-  新規プロジェクト構築（14ステータス・6ビュー・13ラベル・テンプレート・ワークフロー）、
+  新規プロジェクト構築（14ステータス・6ビュー・13ラベル・テンプレート・ワークフロー、`--lite` で小規模チーム向け簡素構成にも対応）、
   日常運用（Issue発行・PR作成・ステータス変更・Sprint管理）、
   分析（Sprintレポート・ベロシティ追跡）、
   移行（Jira/Linear/Notion CSV インポート）を統合的にサポート。
@@ -51,6 +51,9 @@ triggers:
   - 'プロジェクト環境を構築'
   - 'プロジェクトのセットアップ'
   - 'GitHub Projects'
+  # 日本語 — Lite モード
+  - 'Liteモードで構築'
+  - '小規模チーム向けに構築'
   # 日本語 — 移行
   - 'Jira から移行'
   - 'Linear から移行'
@@ -281,10 +284,25 @@ Issue/PR テンプレート + 5 GitHub Actions ワークフローをターゲッ
 | 12-13 | Issue/PR テンプレートが存在する         |
 | 14    | Built-in Workflows が有効               |
 
+### Lite モード（小〜中規模チーム向け）
+
+`--lite` フラグで、1-3人チーム向けの簡素構成を構築:
+
+| 構成              | ステータス | ビュー | ラベル | 推奨チーム規模 |
+| ----------------- | ---------- | ------ | ------ | -------------- |
+| Lite              | 8          | 3      | 5      | 1-3人          |
+| Full (デフォルト) | 14         | 6      | 13     | 4人以上        |
+
+```bash
+./scripts/setup-all.sh owner/repo 1 --lite
+```
+
+Lite → Full への移行は `setup-all.sh` を `--lite` なしで再実行するだけで完了。
+
 ### 他ツールからの移行
 
 ```bash
-./scripts/migrate-import.sh <OWNER/REPO> <PROJECT_NUMBER> export.csv --format jira|linear|notion|generic [--dry-run]
+./scripts/migrate-import.sh <OWNER/REPO> <PROJECT_NUMBER> export.csv --format jira|linear|notion|generic [--dry-run] [--lite]
 ```
 
 ---

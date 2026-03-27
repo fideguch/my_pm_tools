@@ -5,6 +5,7 @@
 # Options:
 #   --format jira|linear|notion|generic   CSV フォーマット（デフォルト: generic）
 #   --dry-run                             実際の作成をせずプレビューのみ
+#   --lite                                Lite モード（8ステータス）のステータスマッピングを使用
 #   --skip-duplicates                     タイトル重複の Issue をスキップ（デフォルト: 有効）
 #
 # Examples:
@@ -29,6 +30,7 @@ shift 3
 OWNER="${REPO%%/*}"
 FORMAT="generic"
 DRY_RUN=false
+LITE=false
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Parse options
@@ -36,6 +38,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --format) FORMAT="$2"; shift 2 ;;
     --dry-run) DRY_RUN=true; shift ;;
+    --lite) LITE=true; shift ;;
     --skip-duplicates) shift ;; # default behavior
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -57,7 +60,7 @@ echo "ドライラン: $DRY_RUN"
 echo ""
 
 # Python script for CSV parsing and import
-python3 << 'PYTHON_SCRIPT' "$REPO" "$NUMBER" "$CSV_FILE" "$FORMAT" "$DRY_RUN" "$OWNER"
+python3 << 'PYTHON_SCRIPT' "$REPO" "$NUMBER" "$CSV_FILE" "$FORMAT" "$DRY_RUN" "$OWNER" "$LITE"
 import csv
 import subprocess
 import sys
@@ -70,6 +73,7 @@ CSV_FILE = sys.argv[3]
 FORMAT = sys.argv[4]
 DRY_RUN = sys.argv[5] == "true"
 OWNER = sys.argv[6]
+LITE = sys.argv[7] == "true" if len(sys.argv) > 7 else False
 
 # Status mapping tables
 JIRA_STATUS_MAP = {
@@ -92,6 +96,36 @@ LINEAR_STATUS_MAP = {
     "Canceled": "Done",
     "Cancelled": "Done",
     "Triage": "進行待ち",
+}
+
+# Lite mode status mappings (8 statuses instead of 14)
+JIRA_LITE_STATUS_MAP = {
+    "To Do": "Backlog",
+    "Open": "Backlog",
+    "In Progress": "開発中",
+    "In Review": "コードレビュー",
+    "In Testing": "テスト中",
+    "Done": "Done",
+    "Closed": "Done",
+    "Backlog": "Icebox",
+}
+
+LINEAR_LITE_STATUS_MAP = {
+    "Backlog": "Icebox",
+    "Todo": "Backlog",
+    "In Progress": "開発中",
+    "In Review": "コードレビュー",
+    "Done": "Done",
+    "Canceled": "Done",
+    "Cancelled": "Done",
+    "Triage": "Backlog",
+}
+
+NOTION_LITE_STATUS_MAP = {
+    "Not started": "Backlog",
+    "In progress": "開発中",
+    "Done": "Done",
+    "Backlog": "Icebox",
 }
 
 JIRA_PRIORITY_MAP = {
@@ -174,7 +208,7 @@ def normalize_row(row, fmt):
         return {
             "title": row.get("Summary", ""),
             "description": row.get("Description", ""),
-            "status": JIRA_STATUS_MAP.get(row.get("Status", ""), "進行待ち"),
+            "status": (JIRA_LITE_STATUS_MAP if LITE else JIRA_STATUS_MAP).get(row.get("Status", ""), "Backlog" if LITE else "進行待ち"),
             "priority": JIRA_PRIORITY_MAP.get(row.get("Priority", ""), "P2"),
             "labels": [JIRA_TYPE_MAP.get(row.get("Issue Type", ""), "feature")],
             "assignee": row.get("Assignee", ""),
@@ -185,7 +219,7 @@ def normalize_row(row, fmt):
         return {
             "title": row.get("Title", ""),
             "description": row.get("Description", ""),
-            "status": LINEAR_STATUS_MAP.get(row.get("Status", ""), "進行待ち"),
+            "status": (LINEAR_LITE_STATUS_MAP if LITE else LINEAR_STATUS_MAP).get(row.get("Status", ""), "Backlog" if LITE else "進行待ち"),
             "priority": LINEAR_PRIORITY_MAP.get(row.get("Priority", ""), "P2"),
             "labels": labels if labels else ["feature"],
             "assignee": row.get("Assignee", ""),
@@ -196,7 +230,7 @@ def normalize_row(row, fmt):
         return {
             "title": title,
             "description": row.get("Description", row.get("説明", "")),
-            "status": row.get("Status", row.get("ステータス", "進行待ち")),
+            "status": NOTION_LITE_STATUS_MAP.get(row.get("Status", row.get("ステータス", "")), "Backlog") if LITE else row.get("Status", row.get("ステータス", "進行待ち")),
             "priority": row.get("Priority", row.get("優先度", "P2")),
             "labels": [l.strip() for l in row.get("Tags", row.get("Labels", row.get("ラベル", "feature"))).split(",") if l.strip()],
             "assignee": row.get("Assignee", row.get("担当者", "")),

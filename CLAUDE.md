@@ -5,7 +5,7 @@
 Maintain and extend the `github_project_manager` skill.
 PM assistant for GitHub Projects V2 with 3 modes:
 
-- **Mode A**: Environment setup (14 statuses, 6 views, 13 labels, templates, workflows)
+- **Mode A**: Environment setup (14 statuses, 6 views, 13 labels, templates, workflows; `--lite` option: 8/3/5)
 - **Mode B**: Daily operations (Issue/PR creation, status changes, backlog management)
 - **Mode C**: Analytics (Sprint reports, velocity tracking)
 

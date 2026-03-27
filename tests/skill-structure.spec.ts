@@ -1697,4 +1697,28 @@ test.describe('Lite Mode Validation', () => {
     const content = readFile('scripts/setup-views.sh');
     expect(content).toMatch(/Usage:.*\[--lite\]/);
   });
+
+  // migrate-import.sh Lite status mapping tests
+  test('migrate-import.sh contains LITE_STATUS_MAP definitions', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content).toContain('JIRA_LITE_STATUS_MAP');
+    expect(content).toContain('LINEAR_LITE_STATUS_MAP');
+    expect(content).toContain('NOTION_LITE_STATUS_MAP');
+  });
+
+  test('migrate-import.sh Lite maps do not use Full-only statuses as values', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    const fullOnlyStatuses = ['進行待ち', 'アサイン待ち', '開発待ち', 'テスト落ち', 'リリース待ち'];
+    const liteMaps = content.match(/LITE_STATUS_MAP\s*=\s*\{[^}]+\}/g) || [];
+    const liteMapsText = liteMaps.join('\n');
+    for (const status of fullOnlyStatuses) {
+      expect(liteMapsText).not.toContain(`"${status}"`);
+    }
+  });
+
+  test('migrate-import.sh supports --lite flag', () => {
+    const content = readFile('scripts/migrate-import.sh');
+    expect(content).toMatch(/--lite\)/);
+    expect(content).toMatch(/LITE/);
+  });
 });
