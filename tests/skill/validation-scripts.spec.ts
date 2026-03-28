@@ -295,6 +295,7 @@ test.describe('Cross-Reference Validation', () => {
     expect(skillDirs).toContain('project-setup-automation');
     expect(skillDirs).toContain('pm-figjam-diagrams');
     expect(skillDirs).toContain('speckit-bridge');
-    expect(skillDirs.length).toBe(7);
+    expect(skillDirs).toContain('workspace-bridge');
+    expect(skillDirs.length).toBe(8);
   });
 });

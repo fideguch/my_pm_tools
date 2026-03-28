@@ -26,6 +26,8 @@ import { editIssue } from './edit-issue.js';
 import { manageLabels } from './manage-labels.js';
 import { manageAssignees } from './manage-assignees.js';
 import { setIssueState } from './set-issue-state.js';
+import { registerNotionTools } from './notion/index.js';
+import { registerWorkspaceTools } from './workspace/index.js';
 
 /**
  * Register all project management tools on the MCP server.
@@ -148,4 +150,9 @@ export function registerTools(server: McpServer, gql: typeof graphql, gh?: GhRun
     },
     async (args) => setIssueState(ghRunner, args)
   );
+
+  // --- Workspace Bridge tools (Notion + Google) ---
+
+  registerNotionTools(server);
+  registerWorkspaceTools(server);
 }

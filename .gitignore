@@ -6,4 +6,6 @@ package-lock.json
 dist/
 coverage/
 .env*
+.notion-credentials.json
+.google-credentials.json
 .claude/

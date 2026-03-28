@@ -6,12 +6,12 @@
 
 > **JTBD**: PM が GitHub Projects V2 の環境構築・日常運用・分析を自然言語で即実行する
 
-| Field           | Definition                                                     |
-| --------------- | -------------------------------------------------------------- |
-| **Target User** | 個人〜小規模チーム（1-10人）の PM / テックリード               |
-| **Core Value**  | GraphQL API の複雑さを吸収し、CLI ワンコマンドで完結           |
-| **Scope**       | Mode A(Setup), Mode B(Daily Ops), Mode C(Analytics), Migration |
-| **Non-Goals**   | GUI構築, マルチOrg対応, Slack連携自前実装, Jira/Linear完全代替 |
+| Field           | Definition                                                                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| **Target User** | 個人〜小規模チーム（1-10人）の PM / テックリード                                                       |
+| **Core Value**  | GraphQL API の複雑さを吸収し、CLI ワンコマンドで完結。Notion + Google Workspace 連携で外部データも統合 |
+| **Scope**       | Mode A(Setup), Mode B(Daily Ops), Mode C(Analytics), Migration                                         |
+| **Non-Goals**   | GUI構築, マルチOrg対応, Slack連携自前実装, Jira/Linear完全代替                                         |
 
 **Suite内の位置づけ**: `requirements_designer → speckit-bridge → **my_pm_tools** → pm-data-analysis`。仕様が固まった後の実行管理レイヤー。
 
@@ -162,19 +162,30 @@ Claude Desktop の設定 (`~/.claude/settings.json` または MCP 設定):
 
 ### MCP ツール一覧
 
-| ツール                     | 方式    | 説明                                                               |
-| -------------------------- | ------- | ------------------------------------------------------------------ |
-| `project_list_fields`      | GraphQL | フィールド・オプション一覧                                         |
-| `project_list_items`       | GraphQL | アイテム一覧（ステータス/優先度フィルタ対応、ページネーション）    |
-| `project_add_item`         | GraphQL | Issue/PR をプロジェクトに追加                                      |
-| `project_move_status`      | GraphQL | ステータス変更（別名対応: "dev"→"開発中"）                         |
-| `project_set_priority`     | GraphQL | 優先度設定（P0-P4）                                                |
-| `project_sprint_report`    | GraphQL | Sprint レポート生成                                                |
-| `project_get_issue`        | GraphQL | Issue 詳細取得（タイトル、本文、ラベル、アサイン、マイルストーン） |
-| `project_edit_issue`       | gh CLI  | Issue のタイトル・本文を編集                                       |
-| `project_manage_labels`    | gh CLI  | Issue のラベル追加・削除                                           |
-| `project_manage_assignees` | gh CLI  | Issue のアサイン追加・削除                                         |
-| `project_set_issue_state`  | gh CLI  | Issue のクローズ・リオープン                                       |
+| ツール                     | 方式         | 説明                                                               |
+| -------------------------- | ------------ | ------------------------------------------------------------------ |
+| `project_list_fields`      | GraphQL      | フィールド・オプション一覧                                         |
+| `project_list_items`       | GraphQL      | アイテム一覧（ステータス/優先度フィルタ対応、ページネーション）    |
+| `project_add_item`         | GraphQL      | Issue/PR をプロジェクトに追加                                      |
+| `project_move_status`      | GraphQL      | ステータス変更（別名対応: "dev"→"開発中"）                         |
+| `project_set_priority`     | GraphQL      | 優先度設定（P0-P4）                                                |
+| `project_sprint_report`    | GraphQL      | Sprint レポート生成                                                |
+| `project_get_issue`        | GraphQL      | Issue 詳細取得（タイトル、本文、ラベル、アサイン、マイルストーン） |
+| `project_edit_issue`       | gh CLI       | Issue のタイトル・本文を編集                                       |
+| `project_manage_labels`    | gh CLI       | Issue のラベル追加・削除                                           |
+| `project_manage_assignees` | gh CLI       | Issue のアサイン追加・削除                                         |
+| `project_set_issue_state`  | gh CLI       | Issue のクローズ・リオープン                                       |
+| `notion_search`            | Notion API   | Notionページ・DB検索                                               |
+| `notion_get_page`          | Notion API   | ページ内容取得（Markdown変換）                                     |
+| `notion_query_database`    | Notion API   | データベースクエリ（フィルタ・ソート）                             |
+| `notion_create_page`       | Notion API   | ページ作成                                                         |
+| `notion_append_blocks`     | Notion API   | ブロック追記                                                       |
+| `workspace_search_drive`   | Drive API    | Driveファイル検索                                                  |
+| `workspace_get_doc`        | Drive API    | Googleドキュメント取得（Markdown）                                 |
+| `workspace_get_sheet`      | Sheets API   | スプレッドシートデータ取得                                         |
+| `workspace_get_slides`     | Drive API    | スライド取得（テキスト）                                           |
+| `workspace_list_events`    | Calendar API | カレンダーイベント取得                                             |
+| `workspace_search_gmail`   | Gmail API    | メール検索                                                         |
 
 **ステータス別名（11種）**: 英語の省略形で日本語ステータスを操作可能。
 
@@ -191,12 +202,13 @@ Claude Desktop の設定 (`~/.claude/settings.json` または MCP 設定):
 
 ## ドキュメント
 
-| ドキュメント                                        | 内容                                |
-| --------------------------------------------------- | ----------------------------------- |
-| **[運用ガイド (USAGE.md)](docs/USAGE.md)**          | 日常運用・ビュー・Sprint・移行・FAQ |
-| **[ワークフロー定義](docs/workflow-definition.md)** | 14ステータスの詳細仕様              |
-| **[ビュー設計](docs/view-design.md)**               | 6ビューの設定仕様                   |
-| **[自動化ガイド](docs/automation-guide.md)**        | ワークフロー・スクリプトの設定手順  |
+| ドキュメント                                        | 内容                                 |
+| --------------------------------------------------- | ------------------------------------ |
+| **[運用ガイド (USAGE.md)](docs/USAGE.md)**          | 日常運用・ビュー・Sprint・移行・FAQ  |
+| **[ワークフロー定義](docs/workflow-definition.md)** | 14ステータスの詳細仕様               |
+| **[ビュー設計](docs/view-design.md)**               | 6ビューの設定仕様                    |
+| **[自動化ガイド](docs/automation-guide.md)**        | ワークフロー・スクリプトの設定手順   |
+| **[Workspace Bridge](docs/workspace-bridge.md)**    | Notion + Google Workspace 連携ガイド |
 
 ## 開発者向け
 

@@ -136,19 +136,30 @@ Add to Claude Desktop config:
 
 ### MCP Tools
 
-| Tool                       | Method  | Description                                                   |
-| -------------------------- | ------- | ------------------------------------------------------------- |
-| `project_list_fields`      | GraphQL | List fields and their options                                 |
-| `project_list_items`       | GraphQL | List items with status/priority filter (pagination support)   |
-| `project_add_item`         | GraphQL | Add an Issue or PR to the project                             |
-| `project_move_status`      | GraphQL | Change item status (alias support: "dev"→"開発中")            |
-| `project_set_priority`     | GraphQL | Set priority (P0-P4)                                          |
-| `project_sprint_report`    | GraphQL | Generate sprint report                                        |
-| `project_get_issue`        | GraphQL | Get issue details (title, body, labels, assignees, milestone) |
-| `project_edit_issue`       | gh CLI  | Edit issue title and/or body                                  |
-| `project_manage_labels`    | gh CLI  | Add or remove labels on an issue                              |
-| `project_manage_assignees` | gh CLI  | Add or remove assignees on an issue                           |
-| `project_set_issue_state`  | gh CLI  | Close or reopen an issue                                      |
+| Tool                       | Method       | Description                                                   |
+| -------------------------- | ------------ | ------------------------------------------------------------- |
+| `project_list_fields`      | GraphQL      | List fields and their options                                 |
+| `project_list_items`       | GraphQL      | List items with status/priority filter (pagination support)   |
+| `project_add_item`         | GraphQL      | Add an Issue or PR to the project                             |
+| `project_move_status`      | GraphQL      | Change item status (alias support: "dev"→"開発中")            |
+| `project_set_priority`     | GraphQL      | Set priority (P0-P4)                                          |
+| `project_sprint_report`    | GraphQL      | Generate sprint report                                        |
+| `project_get_issue`        | GraphQL      | Get issue details (title, body, labels, assignees, milestone) |
+| `project_edit_issue`       | gh CLI       | Edit issue title and/or body                                  |
+| `project_manage_labels`    | gh CLI       | Add or remove labels on an issue                              |
+| `project_manage_assignees` | gh CLI       | Add or remove assignees on an issue                           |
+| `project_set_issue_state`  | gh CLI       | Close or reopen an issue                                      |
+| `notion_search`            | Notion API   | Search Notion pages and databases                             |
+| `notion_get_page`          | Notion API   | Get page content (Markdown conversion)                        |
+| `notion_query_database`    | Notion API   | Query database with filters and sorting                       |
+| `notion_create_page`       | Notion API   | Create a new page                                             |
+| `notion_append_blocks`     | Notion API   | Append blocks to a page                                       |
+| `workspace_search_drive`   | Drive API    | Search files in Google Drive                                  |
+| `workspace_get_doc`        | Drive API    | Get Google Docs content (Markdown)                            |
+| `workspace_get_sheet`      | Sheets API   | Get spreadsheet data                                          |
+| `workspace_get_slides`     | Drive API    | Get slide content (text extraction)                           |
+| `workspace_list_events`    | Calendar API | List calendar events                                          |
+| `workspace_search_gmail`   | Gmail API    | Search emails                                                 |
 
 **Status aliases (11 mappings)**: Use English shorthand to operate Japanese statuses.
 
@@ -169,6 +180,7 @@ Resolution order: exact match → alias match → partial match (case-insensitiv
 - **[Workflow Definition](docs/workflow-definition.md)** — 14-status specification
 - **[View Design](docs/view-design.md)** — 5-view configuration
 - **[Automation Guide](docs/automation-guide.md)** — Workflow and script setup
+- **[Workspace Bridge](docs/workspace-bridge.md)** — Notion + Google Workspace integration guide
 
 ## Developer Setup
 

@@ -9,6 +9,15 @@ PM assistant for GitHub Projects V2 with 3 modes:
 - **Mode B**: Daily operations (Issue/PR creation, status changes, backlog management)
 - **Mode C**: Analytics (Sprint reports, velocity tracking)
 
+## Pre-Coding Gate (MANDATORY)
+
+Before writing or modifying any code in this project, MUST read:
+
+1. **`.claude/rules/codebase-integrity.md`** — Architecture patterns, type safety rules, shell conventions, test patterns, naming conventions, change checklist
+2. **This file (CLAUDE.md)** — Project structure, Five-File Sync Rule, key commands
+
+This prevents structural drift, `as` cast regression, circular imports, and pattern-breaking changes. Skip this gate only for documentation-only edits.
+
 ## Language Rules
 
 - Documentation, UI, communication: Japanese (default)
@@ -37,11 +46,11 @@ github-project-manager/
 │   ├── index.ts                 # Entry point (stdio transport)
 │   ├── server.ts                # Server factory
 │   ├── graphql/                 # GraphQL client, queries, mutations
-│   ├── tools/                   # 11 MCP tools (list-fields, list-items, add-item, move-status, set-priority, sprint-report, get-issue, edit-issue, manage-labels, manage-assignees, set-issue-state)
+│   ├── tools/                   # 22 MCP tools (11 GitHub + 5 Notion + 6 Google Workspace)
 │   ├── schemas/                 # Zod input schemas
 │   └── types/                   # TypeScript type definitions
 ├── templates/                   # Files to copy into TARGET repos
-├── skills/                      # 5 reusable sub-skills
+├── skills/                      # 5 reusable sub-skills + workspace-bridge
 ├── docs/                        # Detailed documentation
 ├── tests/                       # 375+ Playwright regression tests
 │   ├── skill/                   # Skill validation (3 files: structure, content, validation)
