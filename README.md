@@ -2,15 +2,30 @@
 
 [English](README.en.md)
 
-GitHub Projects V2 のPM支援スキル。環境構築・日常運用・Sprint分析・移行を統合サポート。
+## Product Vision
 
-「Issue作って」「ステータス変えて」「Sprintレポート出して」— PMの日常操作を CLI で即実行。新規プロジェクトの一括構築から Jira/Linear からの移行まで対応。
+> **JTBD**: PM が GitHub Projects V2 の環境構築・日常運用・分析を自然言語で即実行する
+
+| Field           | Definition                                                     |
+| --------------- | -------------------------------------------------------------- |
+| **Target User** | 個人〜小規模チーム（1-10人）の PM / テックリード               |
+| **Core Value**  | GraphQL API の複雑さを吸収し、CLI ワンコマンドで完結           |
+| **Scope**       | Mode A(Setup), Mode B(Daily Ops), Mode C(Analytics), Migration |
+| **Non-Goals**   | GUI構築, マルチOrg対応, Slack連携自前実装, Jira/Linear完全代替 |
+
+**Suite内の位置づけ**: `requirements_designer → speckit-bridge → **my_pm_tools** → pm-data-analysis`。仕様が固まった後の実行管理レイヤー。
+
+---
+
+GitHub Projects V2 のPM支援スキル。環境構築・日常運用・Sprint分析・移行を統合サポート��
+
+「Issue作って」「ステータス変えて」「Sprintレポート出し��」— PMの日常操作を CLI で��実行。新規プロ��ェクトの一括構築から Jira/Linear からの移行まで対応。
 
 ## 3つのモード
 
 | モード                 | 用途                                          | 主な操作                                                            |
 | ---------------------- | --------------------------------------------- | ------------------------------------------------------------------- |
-| **Mode A: 環境構築**   | 新規プロジェクトのセットアップ                | 14ステータス・6ビュー・13ラベル・テンプレート・ワークフロー一括構築 |
+| **Mode A: 環境構築**   | 新規プロジェクトのセットアップ                | 14ステータス・5ビュー・13ラベル・テンプレート・ワークフロー一括構築 |
 | **Mode B: 日常運用** ★ | Issue/PR 作成、ステータス変更、バックログ管理 | `project-ops.sh` + 自然言語対話                                     |
 | **Mode C: 分析**       | Sprint レポート、ベロシティ追跡               | `sprint-report.sh`                                                  |
 
@@ -79,10 +94,13 @@ Claude Code または Devin で以下のように起動:
 ### 分析・レポート（Mode C）
 
 ```bash
-./scripts/sprint-report.sh <OWNER> <NUMBER>                    # 現在の Sprint
-./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint previous  # 前回の Sprint
-./scripts/sprint-report.sh <OWNER> <NUMBER> --json             # JSON 出力
+./scripts/sprint-report.sh <OWNER> <NUMBER>                        # 現在の Sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint previous      # 前回の Sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint "Sprint 3"    # タイトルで指定
+./scripts/sprint-report.sh <OWNER> <NUMBER> --json                 # JSON 出力
 ```
+
+> MCP Server 経由の場合も `sprint` パラメータで `current` / `previous` / Sprint タイトルを指定可能。200+ アイテムのプロジェクトはカーソルページネーション（最大20ページ）で全件取得。
 
 ### 他ツールからの移行
 
@@ -95,14 +113,14 @@ Claude Code または Devin で以下のように起動:
 
 ## 構築される環境
 
-| 要素                   | 内容                                                                          |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| **ステータス**         | 14段階（Icebox → Planning → Design → Dev → Release → Done）                   |
-| **ビュー**             | 6種（Issues, Product Backlog, Sprint Board, Sprint Table, Roadmap, My Items） |
-| **カスタムフィールド** | Priority (P0-P4), Sprint (1w Iteration), Estimate (Number), Target (Text)     |
-| **ラベル**             | 13種（Type 6 + Area 4 + Ops 3）                                               |
-| **テンプレート**       | Issue (feature/bug) + PR テンプレート                                         |
-| **自動化**             | Built-in Workflows 5 + GitHub Actions 5                                       |
+| 要素                   | 内容                                                                      |
+| ---------------------- | ------------------------------------------------------------------------- |
+| **ステータス**         | 14段階（Icebox → Planning → Design → Dev → Release → Done）               |
+| **ビュー**             | 5種（Product Backlog, Sprint Board, Sprint Table, Roadmap, My Items）     |
+| **カスタムフィールド** | Priority (P0-P4), Sprint (1w Iteration), Estimate (Number), Target (Text) |
+| **ラベル**             | 13種（Type 6 + Area 4 + Ops 3）                                           |
+| **テンプレート**       | Issue (feature/bug) + PR テンプレート                                     |
+| **自動化**             | Built-in Workflows 5 + GitHub Actions 5                                   |
 
 ## スクリプト一覧
 
@@ -112,7 +130,7 @@ Claude Code または Devin で以下のように起動:
 | `setup-labels.sh`    | A      | ラベル13種一括作成                         |
 | `setup-fields.sh`    | A      | カスタムフィールド作成                     |
 | `setup-status.sh`    | A      | Status 14オプション設定                    |
-| `setup-views.sh`     | A      | 5ビュー作成                                |
+| `setup-views.sh`     | A      | 5ビュー作成（Lite: 3ビュー）               |
 | `setup-templates.sh` | A      | テンプレート＆ワークフロー自動配置         |
 | `project-ops.sh`     | B      | Issue/PR追加・ステータス変更・Priority設定 |
 | `migrate-import.sh`  | A      | Jira/Linear/Notion CSV 移行                |
@@ -158,17 +176,18 @@ Claude Desktop の設定 (`~/.claude/settings.json` または MCP 設定):
 | `project_manage_assignees` | gh CLI  | Issue のアサイン追加・削除                                         |
 | `project_set_issue_state`  | gh CLI  | Issue のクローズ・リオープン                                       |
 
-**ステータス別名**: `dev`→`開発中`、`review`→`コードレビュー`、`testing`→`テスト中` など。英語の省略形で日本語ステータスを操作可能。
+**ステータス別名（11種）**: 英語の省略形で日本語ステータスを操作可能。
 
-## 連携スキル
+| Alias         | 解決先         |     | Alias      | 解決先         |
+| ------------- | -------------- | --- | ---------- | -------------- |
+| `dev`         | 開発中         |     | `testing`  | テスト中       |
+| `review`      | コードレビュー |     | `done`     | Done           |
+| `backlog`     | Backlog        |     | `icebox`   | Icebox         |
+| `test-failed` | テスト落ち     |     | `released` | リリース済み   |
+| `waiting`     | 進行待ち       |     | `design`   | デザイン作成中 |
+| `ready`       | 開発待ち       |     |            |                |
 
-| スキル                        | 説明                                         |
-| ----------------------------- | -------------------------------------------- |
-| **code-quality**              | ESLint + Prettier + Husky + lint-staged 導入 |
-| **ci-cd-pipeline**            | GitHub Actions CI/CD 品質パイプライン        |
-| **typescript-best-practices** | TypeScript 推奨設定 & ガイドライン           |
-| **git-workflow**              | Conventional Commits & ブランチ戦略          |
-| **project-setup-automation**  | GitHub Projects V2 環境自動構築              |
+解決順序: 完全一致 → エイリアス一致 → 部分一致（大文字小文字無視）。
 
 ## ドキュメント
 
@@ -200,7 +219,7 @@ npm run quality     # lint + typecheck + format:check
 | 2   | requirements_designer | 要件定義 + Figma UI生成        | [fideguch/requirements_designer](https://github.com/fideguch/requirements_designer) |
 | 3   | speckit-bridge        | 要件→仕様変換（品質ゲート≥70） | [fideguch/speckit-bridge](https://github.com/fideguch/speckit-bridge)               |
 | 4   | pm-data-analysis      | GAFA品質データ分析             | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis)           |
-| 5   | pm-ad-analysis        | 全自動広告運用（5チャネル）    | [fideguch/pm_ad_analysis](https://github.com/fideguch/pm_ad_analysis)               |
+| 5   | pm-ad-operations      | 広告CSV分析（Google/Meta）     | [fideguch/pm_ad_operations](https://github.com/fideguch/pm_ad_operations)           |
 
 ### Pipeline
 

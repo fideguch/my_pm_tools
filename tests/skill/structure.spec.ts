@@ -134,7 +134,9 @@ test.describe('File Structure Validation', () => {
   test('tests directory exists with spec files', () => {
     expect(fileExists('tests/skill/structure.spec.ts')).toBe(true);
     expect(fileExists('tests/skill/content.spec.ts')).toBe(true);
-    expect(fileExists('tests/skill/validation.spec.ts')).toBe(true);
+    expect(fileExists('tests/skill/validation-scripts.spec.ts')).toBe(true);
+    expect(fileExists('tests/skill/validation-operations.spec.ts')).toBe(true);
+    expect(fileExists('tests/skill/validation-advanced.spec.ts')).toBe(true);
   });
 });
 

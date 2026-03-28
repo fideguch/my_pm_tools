@@ -10,7 +10,7 @@ A PM assistant skill for GitHub Projects V2. Covers environment setup, daily ope
 
 | Mode                     | Purpose                                               | Key Operations                                        |
 | ------------------------ | ----------------------------------------------------- | ----------------------------------------------------- |
-| **Mode A: Setup**        | New project environment                               | 14 statuses, 6 views, 13 labels, templates, workflows |
+| **Mode A: Setup**        | New project environment                               | 14 statuses, 5 views, 13 labels, templates, workflows |
 | **Mode B: Operations** ★ | Issue/PR creation, status changes, backlog management | `project-ops.sh` + natural language                   |
 | **Mode C: Analytics**    | Sprint reports, velocity tracking                     | `sprint-report.sh`                                    |
 
@@ -25,7 +25,7 @@ Use the `--lite` flag to set up a streamlined configuration for 1-3 person teams
 | Config         | Statuses | Views | Labels | Recommended Team Size |
 | -------------- | -------- | ----- | ------ | --------------------- |
 | Lite           | 8        | 3     | 5      | 1-3 people            |
-| Full (default) | 14       | 6     | 13     | 4+ people             |
+| Full (default) | 14       | 5     | 13     | 4+ people             |
 
 You can migrate from Lite to Full at any time by re-running `setup-all.sh` without `--lite`.
 
@@ -79,10 +79,13 @@ Invoke in Claude Code or Devin:
 ### Analytics (Mode C)
 
 ```bash
-./scripts/sprint-report.sh <OWNER> <NUMBER>                    # Current sprint
-./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint previous  # Previous sprint
-./scripts/sprint-report.sh <OWNER> <NUMBER> --json             # JSON output
+./scripts/sprint-report.sh <OWNER> <NUMBER>                        # Current sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint previous      # Previous sprint
+./scripts/sprint-report.sh <OWNER> <NUMBER> --sprint "Sprint 3"    # By title
+./scripts/sprint-report.sh <OWNER> <NUMBER> --json                 # JSON output
 ```
+
+> MCP Server also supports `sprint` parameter: `current` / `previous` / Sprint title. Projects with 200+ items use cursor pagination (max 20 pages).
 
 ### Migration from Other Tools
 
@@ -147,13 +150,24 @@ Add to Claude Desktop config:
 | `project_manage_assignees` | gh CLI  | Add or remove assignees on an issue                           |
 | `project_set_issue_state`  | gh CLI  | Close or reopen an issue                                      |
 
-**Status aliases**: `dev`→`開発中`, `review`→`コードレビュー`, `testing`→`テスト中`, etc. Use English shorthand to operate Japanese statuses.
+**Status aliases (11 mappings)**: Use English shorthand to operate Japanese statuses.
+
+| Alias         | Target         |     | Alias      | Target         |
+| ------------- | -------------- | --- | ---------- | -------------- |
+| `dev`         | 開発中         |     | `testing`  | テスト中       |
+| `review`      | コードレビュー |     | `done`     | Done           |
+| `backlog`     | Backlog        |     | `icebox`   | Icebox         |
+| `test-failed` | テスト落ち     |     | `released` | リリース済み   |
+| `waiting`     | 進行待ち       |     | `design`   | デザイン作成中 |
+| `ready`       | 開発待ち       |     |            |                |
+
+Resolution order: exact match → alias match → partial match (case-insensitive).
 
 ## Documentation
 
 - **[Operation Guide (USAGE.md)](docs/USAGE.md)** — Daily ops, views, Sprint, migration, FAQ
 - **[Workflow Definition](docs/workflow-definition.md)** — 14-status specification
-- **[View Design](docs/view-design.md)** — 6-view configuration
+- **[View Design](docs/view-design.md)** — 5-view configuration
 - **[Automation Guide](docs/automation-guide.md)** — Workflow and script setup
 
 ## Developer Setup
@@ -177,7 +191,7 @@ This repository is part of a 5-tool suite that automates PM workflows in Claude 
 | 2   | requirements_designer | Requirements + Figma UI        | [fideguch/requirements_designer](https://github.com/fideguch/requirements_designer) |
 | 3   | speckit-bridge        | Requirements → Spec (gate ≥70) | [fideguch/speckit-bridge](https://github.com/fideguch/speckit-bridge)               |
 | 4   | pm-data-analysis      | GAFA-quality data analysis     | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis)           |
-| 5   | pm-ad-analysis        | Multi-channel ad operations    | [fideguch/pm_ad_analysis](https://github.com/fideguch/pm_ad_analysis)               |
+| 5   | pm-ad-operations      | Ad CSV analysis (Google/Meta)  | [fideguch/pm_ad_operations](https://github.com/fideguch/pm_ad_operations)           |
 
 ## License
 
