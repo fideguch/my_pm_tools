@@ -2,27 +2,22 @@
  * Shared field-value extraction helpers for project items.
  * Used by list-items and sprint-report to avoid duplicated logic.
  */
-import type { ItemNode, FieldValueNode, ProjectItem } from '../types/index.js';
+import type { ItemNode, ProjectItem } from '../types/index.js';
+import { hasField, isSelectValue, isNumberValue, isIterationValue } from '../types/index.js';
 
 /**
  * Extract a field value from a project item by field name.
  * Returns the display value (name, number, or title) or null if not found.
- * Uses `in` narrowing where possible; a single `as` cast is needed
- * because the FieldValueNode union includes Record<string, never>
- * which lacks a `field` property.
+ * Uses type guard functions for safe narrowing — no `as` casts needed.
  */
 export function getFieldValue(item: ItemNode, fieldName: string): string | number | null {
   for (const fv of item.fieldValues.nodes) {
-    if (!fv || !('field' in fv)) continue;
+    if (!hasField(fv)) continue;
+    if (fv.field.name !== fieldName) continue;
 
-    // Safe cast: we verified 'field' exists above. The union's empty-record
-    // variant is excluded by the `in` check.
-    const typed = fv as FieldValueNode & { field: { name: string } };
-    if (typed.field.name !== fieldName) continue;
-
-    if ('name' in fv) return (fv as { name: string }).name;
-    if ('number' in fv) return (fv as { number: number }).number;
-    if ('title' in fv) return (fv as { title: string }).title;
+    if (isSelectValue(fv)) return fv.name;
+    if (isNumberValue(fv)) return fv.number;
+    if (isIterationValue(fv)) return fv.title;
   }
   return null;
 }

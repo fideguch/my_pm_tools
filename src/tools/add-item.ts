@@ -78,6 +78,8 @@ export async function addItem(
       }
     );
 
+    // Dynamic GraphQL query returns issue OR pullRequest based on itemType.
+    // Type assertion required because response shape varies at runtime.
     const repoData = response as unknown as {
       repository: {
         issue?: { id: string };

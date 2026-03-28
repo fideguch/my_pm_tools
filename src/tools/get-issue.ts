@@ -37,7 +37,8 @@ export async function getIssue(
       ],
     };
   }
-  const [owner, repo] = parts as [string, string];
+  const owner = parts[0]!;
+  const repo = parts[1]!;
 
   let data: GetIssueResponse;
   try {

@@ -70,6 +70,34 @@ export type FieldValueNode =
   | IterationValueNode
   | Record<string, never>;
 
+// --- Type guards for FieldValueNode discriminated union ---
+
+/** Narrows to a field value node that has a `field` property with a name. */
+export function hasField(fv: FieldValueNode): fv is (
+  | SingleSelectValueNode
+  | NumberValueNode
+  | IterationValueNode
+) & {
+  readonly field: { readonly name: string };
+} {
+  return !!fv && 'field' in fv && fv.field != null && 'name' in fv.field;
+}
+
+/** Narrows to SingleSelectValueNode (has `field` and `name`). */
+export function isSelectValue(fv: FieldValueNode): fv is SingleSelectValueNode {
+  return hasField(fv) && 'name' in fv && typeof (fv as SingleSelectValueNode).name === 'string';
+}
+
+/** Narrows to NumberValueNode (has `field` and `number`). */
+export function isNumberValue(fv: FieldValueNode): fv is NumberValueNode {
+  return hasField(fv) && 'number' in fv && typeof (fv as NumberValueNode).number === 'number';
+}
+
+/** Narrows to IterationValueNode (has `field`, `title`, and `iterationId`). */
+export function isIterationValue(fv: FieldValueNode): fv is IterationValueNode {
+  return hasField(fv) && 'iterationId' in fv;
+}
+
 export interface SingleSelectValueNode {
   readonly field: { readonly name: string };
   readonly name: string;

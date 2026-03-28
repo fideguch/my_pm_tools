@@ -9,6 +9,7 @@ import type {
   ItemNode,
   SprintReport,
 } from '../types/index.js';
+import { isIterationValue } from '../types/index.js';
 import { getFieldValue, isBlocked } from '../utils/field-helpers.js';
 
 interface GetProjectFullResponse {
@@ -23,8 +24,8 @@ function isIterationField(field: FieldNode): field is IterationFieldNode {
 
 function getIterationId(item: ItemNode): string | null {
   for (const fv of item.fieldValues.nodes) {
-    if (fv && 'iterationId' in fv) {
-      return (fv as { iterationId: string }).iterationId;
+    if (isIterationValue(fv)) {
+      return fv.iterationId;
     }
   }
   return null;
@@ -154,8 +155,10 @@ export async function sprintReport(
   const blockedItems: { number: number | null; title: string }[] = [];
 
   for (const item of sprintItems) {
-    const status = (getFieldValue(item, 'Status') as string | null) ?? 'Unknown';
-    const priority = (getFieldValue(item, 'Priority') as string | null) ?? 'Unset';
+    const rawStatus = getFieldValue(item, 'Status');
+    const status = typeof rawStatus === 'string' ? rawStatus : 'Unknown';
+    const rawPriority = getFieldValue(item, 'Priority');
+    const priority = typeof rawPriority === 'string' ? rawPriority : 'Unset';
     const estimate = getFieldValue(item, 'Estimate');
 
     statusCounts[status] = (statusCounts[status] ?? 0) + 1;
