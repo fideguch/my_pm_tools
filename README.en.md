@@ -160,7 +160,7 @@ Add to Claude Desktop config:
 
 ```bash
 npm install
-npm test            # 340+ regression tests
+npm test            # 375+ regression tests
 npm run build       # Build MCP server
 npm run quality     # lint + typecheck + format:check
 ```

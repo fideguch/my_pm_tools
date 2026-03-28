@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-03-28
+
+### Added
+
+- Cursor-based pagination for `list-items` and `sprint-report` (MAX_PAGES=20 guard)
+- `PageInfo` interface in type definitions
+- Type guard functions: `hasField`, `isSelectValue`, `isNumberValue`, `isIterationValue`
+- 10 scenario tests (`tests/scenarios/pm-workflows.spec.ts`) with Given-When-Then
+- `QUICKSTART.md` — 3-step installation guide
+- `examples/` directory with 4 example docs (setup, daily, analytics, MCP)
+
+### Changed
+
+- `GET_PROJECT_FULL` query now accepts `$cursor` parameter for pagination
+- `sprint-report.ts` and `list-items.ts` paginate through all items automatically
+- Test suite split: `skill-structure.spec.ts` (1,726 lines) → `tests/skill/{structure,content,validation}.spec.ts`
+- Unsafe `as` casts reduced from 9 to 1 (justified: dynamic GraphQL response in `add-item.ts`)
+- Test count: 339 → 375
+
+### Fixed
+
+- Projects with 200+ items no longer truncate results silently
+- Added try/catch to sprint-report pagination loop for error resilience
+
 ## [2.1.0] - 2026-03-28
 
 ### Added

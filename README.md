@@ -183,7 +183,7 @@ Claude Desktop の設定 (`~/.claude/settings.json` または MCP 設定):
 
 ```bash
 npm install
-npm test            # リグレッションテスト (339件+)
+npm test            # リグレッションテスト (375件+)
 npm run build       # MCP Server ビルド
 npm run quality     # lint + typecheck + format:check
 ```

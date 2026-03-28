@@ -106,7 +106,7 @@ Generate the sprint report for the current sprint in project 3 owned by myorg
 ## Useful commands
 
 ```bash
-npm test            # Run 340+ regression tests
+npm test            # Run 375+ regression tests
 npm run build       # Rebuild after source changes
 npm run quality     # Lint + typecheck + format check
 shellcheck scripts/*.sh  # Validate shell scripts

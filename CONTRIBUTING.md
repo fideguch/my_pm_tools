@@ -48,7 +48,7 @@ git checkout -b refine/<issue番号>-<概要>
 
 ```bash
 npm run quality    # lint + typecheck + format:check
-npm test           # Playwright リグレッションテスト (231件)
+npm test           # Playwright リグレッションテスト (375件)
 ```
 
 両方パスしてから PR を作成してください。
@@ -71,7 +71,7 @@ npm test           # Playwright リグレッションテスト (231件)
 2. `README.md` — 概要テーブル・スクリプト一覧
 3. `scripts/*.sh` — 自動化スクリプト
 4. `docs/*.md` — 詳細ドキュメント
-5. `tests/skill-structure.spec.ts` — リグレッションテスト
+5. `tests/skill/*.spec.ts` — リグレッションテスト（structure, content, validation）
 
 ## 優先度
 
