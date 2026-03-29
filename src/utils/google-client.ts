@@ -100,6 +100,7 @@ async function googleFetchCore(
       method: opts?.method ?? 'GET',
       headers,
       ...(opts?.body ? { body: opts.body } : {}),
+      signal: AbortSignal.timeout(30000),
     });
 
     if (res.status === 429) {
@@ -297,7 +298,7 @@ export function createGoogleClientFromADC(): GoogleClient {
 
 /** Detect if query already uses Drive API operators (pass-through mode). */
 function isDriveOperatorQuery(q: string): boolean {
-  return /\b(contains|!=|<=|>=|in\b|has\b|not\b)/i.test(q) || q.includes('=');
+  return /\b(contains|!=|<=|>=|in\b|has\b|not\b)/i.test(q) || /\s=\s/.test(q);
 }
 
 /**
@@ -322,9 +323,10 @@ export function createGoogleClient(creds: GoogleCredentials): GoogleClient {
       const token = await getToken();
       const safeQuery = query.replace(/'/g, "\\'");
       const baseQuery = isDriveOperatorQuery(query) ? safeQuery : `name contains '${safeQuery}'`;
+      const safeMimeType = opts?.mimeType ? opts.mimeType.replace(/'/g, "\\'") : undefined;
       const params = new URLSearchParams({
-        q: opts?.mimeType
-          ? `${baseQuery} and mimeType = '${opts.mimeType}' and trashed = false`
+        q: safeMimeType
+          ? `${baseQuery} and mimeType = '${safeMimeType}' and trashed = false`
           : `${baseQuery} and trashed = false`,
         pageSize: String(opts?.limit ?? 20),
         fields: 'files(id,name,mimeType,webViewLink,modifiedTime),nextPageToken',

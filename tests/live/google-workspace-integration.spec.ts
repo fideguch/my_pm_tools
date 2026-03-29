@@ -411,10 +411,8 @@ test.describe('Layer 1: Mock Integration — Sheets Append→Rollback', () => {
 // ================================================================
 
 const LIVE = !!process.env['GOOGLE_LIVE_TEST'];
-const LIVE_SPREADSHEET_ID =
-  process.env['GOOGLE_TEST_SPREADSHEET_ID'] ?? '1kYRpPqR634PL7a-fvOOzHefbHWlliY-1MU94cDw9lyc';
-const LIVE_DOC_ID =
-  process.env['GOOGLE_TEST_DOC_ID'] ?? '1gkKFsE1PpPZJE34guUctJ9OVhL_nV4Ftehd_lBcHI7M';
+const LIVE_SPREADSHEET_ID = process.env['GOOGLE_TEST_SPREADSHEET_ID'] ?? '';
+const LIVE_DOC_ID = process.env['GOOGLE_TEST_DOC_ID'] ?? '';
 
 /**
  * Lazily create the live GoogleClient. Only called when LIVE tests run.
@@ -437,6 +435,7 @@ test.describe('Layer 2: Live API — Google Drive Search', () => {
 
 test.describe('Layer 2: Live API — Google Docs Read', () => {
   test.skip(!LIVE, 'Skipped: set GOOGLE_LIVE_TEST=1 to run live tests');
+  test.skip(!LIVE_DOC_ID, 'Skipped: set GOOGLE_TEST_DOC_ID to run doc tests');
 
   test('live doc read returns content', async () => {
     const google = createLiveClient();
@@ -448,6 +447,7 @@ test.describe('Layer 2: Live API — Google Docs Read', () => {
 
 test.describe('Layer 2: Live API — Google Sheets Read→Write→Rollback', () => {
   test.skip(!LIVE, 'Skipped: set GOOGLE_LIVE_TEST=1 to run live tests');
+  test.skip(!LIVE_SPREADSHEET_ID, 'Skipped: set GOOGLE_TEST_SPREADSHEET_ID to run sheet tests');
 
   test('live sheet read→write→verify→clear→verify on Z99', async () => {
     const google = createLiveClient();

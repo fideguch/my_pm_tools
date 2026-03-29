@@ -62,7 +62,7 @@
 
    | 認証方式     | フォールバック                   | 例               |
    | ------------ | -------------------------------- | ---------------- |
-   | Google OAuth | env vars → ADC → エラー（3段階） | Google Workspace |
+   | Google OAuth | ADC → env vars → エラー（3段階） | Google Workspace |
    | API Key      | env var → エラー（2段階）        | Linear, Notion   |
    | OAuth 2.0    | token → refresh → 再認証要求     | GitHub           |
 
