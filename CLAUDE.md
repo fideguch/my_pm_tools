@@ -46,16 +46,16 @@ github-project-manager/
 │   ├── index.ts                 # Entry point (stdio transport)
 │   ├── server.ts                # Server factory
 │   ├── graphql/                 # GraphQL client, queries, mutations
-│   ├── tools/                   # 22 MCP tools
-│   │   ├── notion/              # Notion API tools (5: search, get-page, query-db, create-page, append-blocks)
-│   │   ├── workspace/           # Google Workspace tools (6: drive, docs, sheets, slides, calendar, gmail)
+│   ├── tools/                   # 27 MCP tools
+│   │   ├── notion/              # Notion API tools (7: search, get-page, query-db, create-page, append-blocks, update-page, archive-page)
+│   │   ├── workspace/           # Google Workspace tools (9: drive, docs, sheets, slides, calendar, gmail, update-sheet, append-sheet, create-event)
 │   │   └── *.ts                 # GitHub Project tools (11: list-fields, list-items, add-item, etc.)
 │   ├── schemas/                 # Zod input schemas
 │   └── types/                   # TypeScript type definitions
 ├── templates/                   # Files to copy into TARGET repos
 ├── skills/                      # 8 reusable sub-skills
 ├── docs/                        # Detailed documentation
-├── tests/                       # 476 Playwright regression tests
+├── tests/                       # 502 Playwright regression tests
 │   ├── skill/                   # Skill validation (3 files: structure, content, validation)
 │   ├── mcp/                     # MCP tool/schema/server tests (72+ workspace tests)
 │   └── scenarios/               # Scenario tests (47+ tests, incl. PM + cross-service workflows)
@@ -67,7 +67,7 @@ github-project-manager/
 - Skill definition: Markdown (SKILL.md, 3-mode architecture)
 - MCP Server: TypeScript + @modelcontextprotocol/sdk + @octokit/graphql + Zod
 - Automation: Shell scripts (bash, gh CLI, GraphQL) — 9 scripts, 1,498 lines
-- Tests: Playwright + TypeScript (strict mode) — 476 tests
+- Tests: Playwright + TypeScript (strict mode) — 502 tests
 - Code quality: ESLint + Prettier + Husky + lint-staged
 - CI: GitHub Actions (lint, typecheck, format:check, shellcheck, test)
 
@@ -95,7 +95,7 @@ npm run quality && npm test
 ## Key Commands
 
 ```bash
-npm test                          # Run 476 regression tests
+npm test                          # Run 502 regression tests
 npm run quality                   # lint + typecheck + format:check
 npm run build                     # Build MCP server to dist/
 npm run format                    # Auto-format all files

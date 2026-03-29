@@ -6,6 +6,9 @@ import {
   workspaceGetSlidesSchema,
   workspaceListEventsSchema,
   workspaceSearchGmailSchema,
+  workspaceUpdateSheetSchema,
+  workspaceAppendSheetSchema,
+  workspaceCreateEventSchema,
 } from '../../schemas/workspace.js';
 import { createGoogleClient } from '../../utils/google-client.js';
 import type { GoogleClient } from '../../utils/google-client.js';
@@ -15,6 +18,9 @@ import { workspaceGetSheet } from './get-sheet.js';
 import { workspaceGetSlides } from './get-slides.js';
 import { workspaceListEvents } from './list-events.js';
 import { workspaceSearchGmail } from './search-gmail.js';
+import { workspaceUpdateSheet } from './update-sheet.js';
+import { workspaceAppendSheet } from './append-sheet.js';
+import { workspaceCreateEvent } from './create-event.js';
 
 /** Lazy-initialized Google client singleton. */
 let cachedClient: GoogleClient | undefined;
@@ -142,6 +148,55 @@ export function registerWorkspaceTools(server: McpServer): void {
       const client = getClient();
       if (!client) return NOT_CONFIGURED;
       return workspaceSearchGmail(client, args);
+    }
+  );
+
+  // --- Sheets Write ---
+
+  server.registerTool(
+    'workspace_update_sheet',
+    {
+      description:
+        'Update cell values in a Google Sheets range (PUT — overwrites the range completely)',
+      inputSchema: workspaceUpdateSheetSchema,
+      annotations: { idempotentHint: true, openWorldHint: true },
+    },
+    async (args) => {
+      const client = getClient();
+      if (!client) return NOT_CONFIGURED;
+      return workspaceUpdateSheet(client, args);
+    }
+  );
+
+  server.registerTool(
+    'workspace_append_sheet',
+    {
+      description:
+        'Append rows to a Google Sheets table (POST — adds rows after the last row in the table)',
+      inputSchema: workspaceAppendSheetSchema,
+      annotations: { idempotentHint: false, openWorldHint: true },
+    },
+    async (args) => {
+      const client = getClient();
+      if (!client) return NOT_CONFIGURED;
+      return workspaceAppendSheet(client, args);
+    }
+  );
+
+  // --- Calendar Write ---
+
+  server.registerTool(
+    'workspace_create_event',
+    {
+      description:
+        'Create a Google Calendar event (timed or all-day). Supports RFC3339 datetimes and IANA timezones.',
+      inputSchema: workspaceCreateEventSchema,
+      annotations: { idempotentHint: false, openWorldHint: true },
+    },
+    async (args) => {
+      const client = getClient();
+      if (!client) return NOT_CONFIGURED;
+      return workspaceCreateEvent(client, args);
     }
   );
 }

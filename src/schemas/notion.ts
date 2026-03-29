@@ -53,3 +53,25 @@ export const notionAppendBlocksSchema = {
   blockId: z.string().min(1).describe('Target block or page ID to append content to'),
   content: z.string().min(1).describe('Content as plain text (added as paragraph blocks)'),
 };
+
+/** notion_update_page input schema */
+export const notionUpdatePageSchema = {
+  pageId: z.string().min(1).describe('Notion page ID (UUID format, with or without dashes)'),
+  properties: z
+    .string()
+    .min(1)
+    .describe(
+      'Properties to update as JSON string (same format as Notion API). ' +
+        'Updatable: title, rich_text, number, select, multi_select, date, checkbox, url, email, phone_number, relation, people, status. ' +
+        'Read-only: formula, rollup, created_time, last_edited_time'
+    ),
+};
+
+/** notion_archive_page input schema */
+export const notionArchivePageSchema = {
+  pageId: z.string().min(1).describe('Notion page ID (UUID format, with or without dashes)'),
+  archive: z
+    .boolean()
+    .default(true)
+    .describe('true = archive the page (default), false = unarchive'),
+};

@@ -67,3 +67,66 @@ export const workspaceSearchGmailSchema = {
     .default(10)
     .describe('Max messages to return (default 10)'),
 };
+
+/** workspace_update_sheet input schema */
+export const workspaceUpdateSheetSchema = {
+  spreadsheetId: z
+    .string()
+    .min(1)
+    .describe('Spreadsheet ID (from URL: docs.google.com/spreadsheets/d/{id})'),
+  range: z.string().min(1).describe('A1 notation range (e.g. "Sheet1!A1:C10")'),
+  values: z.string().min(1).describe('2D array as JSON string (e.g. [["A1","B1"],["A2","B2"]])'),
+  valueInputOption: z
+    .enum(['RAW', 'USER_ENTERED'])
+    .default('USER_ENTERED')
+    .describe('How values are interpreted: USER_ENTERED parses dates/numbers, RAW stores as-is'),
+};
+
+/** workspace_append_sheet input schema */
+export const workspaceAppendSheetSchema = {
+  spreadsheetId: z
+    .string()
+    .min(1)
+    .describe('Spreadsheet ID (from URL: docs.google.com/spreadsheets/d/{id})'),
+  range: z.string().min(1).describe('A1 notation range to detect table (e.g. "Sheet1!A:C")'),
+  values: z.string().min(1).describe('Rows to append as JSON string 2D array'),
+  valueInputOption: z
+    .enum(['RAW', 'USER_ENTERED'])
+    .default('USER_ENTERED')
+    .describe('How values are interpreted: USER_ENTERED parses dates/numbers, RAW stores as-is'),
+  insertDataOption: z
+    .enum(['INSERT_ROWS', 'OVERWRITE'])
+    .default('INSERT_ROWS')
+    .describe('INSERT_ROWS shifts existing data down; OVERWRITE replaces data below the table'),
+};
+
+/** workspace_create_event input schema */
+export const workspaceCreateEventSchema = {
+  calendarId: z
+    .string()
+    .default('primary')
+    .describe("Calendar ID (default: 'primary' for the authenticated user's calendar)"),
+  summary: z.string().min(1).describe('Event title'),
+  startDateTime: z
+    .string()
+    .min(1)
+    .describe(
+      'Start time in RFC3339 with timezone offset (e.g. "2026-04-01T10:00:00+09:00"). For all-day events use date only: "2026-04-01"'
+    ),
+  endDateTime: z
+    .string()
+    .min(1)
+    .describe(
+      'End time in RFC3339 with timezone offset. For all-day events use date only: "2026-04-02"'
+    ),
+  timeZone: z
+    .string()
+    .optional()
+    .describe('IANA timezone (e.g. "Asia/Tokyo"). Used when offset is ambiguous.'),
+  allDay: z
+    .boolean()
+    .optional()
+    .describe('If true, use date-only format for start/end (e.g. "2026-04-01")'),
+  description: z.string().optional().describe('Event description'),
+  location: z.string().optional().describe('Location or meeting room'),
+};

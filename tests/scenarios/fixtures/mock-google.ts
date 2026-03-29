@@ -7,7 +7,10 @@ import type { GoogleClient } from '../../../src/utils/google-client.js';
 import type {
   DriveSearchResponse,
   SheetValuesResponse,
+  SheetUpdateResponse,
+  SheetAppendResponse,
   EventListResponse,
+  CalendarEventResponse,
   GmailListResponse,
   GmailMessageResponse,
 } from '../../../src/types/workspace.js';
@@ -29,7 +32,10 @@ export function createMockGoogle(responses: readonly unknown[]): GoogleClient {
     searchDrive: async () => next() as DriveSearchResponse,
     exportFile: async () => next() as string,
     getSheetValues: async () => next() as SheetValuesResponse,
+    updateSheetValues: async () => next() as SheetUpdateResponse,
+    appendSheetValues: async () => next() as SheetAppendResponse,
     listEvents: async () => next() as EventListResponse,
+    createEvent: async () => next() as CalendarEventResponse,
     listGmailMessages: async () => next() as GmailListResponse,
     getGmailMessage: async () => next() as GmailMessageResponse,
   };
@@ -99,6 +105,37 @@ export const MOCK_GMAIL_LIST: GmailListResponse = {
     { id: 'msg-2', threadId: 'thread-2' },
   ],
   resultSizeEstimate: 2,
+};
+
+export const MOCK_SHEET_UPDATE: SheetUpdateResponse = {
+  spreadsheetId: 'sheet-456',
+  updatedRange: 'Sheet1!A1:C2',
+  updatedRows: 2,
+  updatedColumns: 3,
+  updatedCells: 6,
+};
+
+export const MOCK_SHEET_APPEND: SheetAppendResponse = {
+  spreadsheetId: 'sheet-456',
+  tableRange: 'Sheet1!A1:C3',
+  updates: {
+    spreadsheetId: 'sheet-456',
+    updatedRange: 'Sheet1!A4:C4',
+    updatedRows: 1,
+    updatedColumns: 3,
+    updatedCells: 3,
+  },
+};
+
+export const MOCK_CALENDAR_EVENT_CREATED: CalendarEventResponse = {
+  id: 'evt-new-1',
+  htmlLink: 'https://calendar.google.com/event?eid=evt-new-1',
+  summary: 'Sprint Planning',
+  start: { dateTime: '2026-04-01T10:00:00+09:00' },
+  end: { dateTime: '2026-04-01T11:00:00+09:00' },
+  status: 'confirmed',
+  description: 'Sprint 6 planning',
+  location: 'Room A',
 };
 
 export const MOCK_GMAIL_MESSAGE: GmailMessageResponse = {

@@ -70,7 +70,7 @@ Claude Desktop または Claude Code の MCP 設定に追加:
 
 ## ツールリファレンス
 
-### Notion ツール（5種）
+### Notion ツール（7種）
 
 #### `notion_search`
 
@@ -135,7 +135,34 @@ Notion ワークスペース内のページとデータベースを検索。
 
 `blockId` はページ ID またはブロック ID です。`content` はプレーンテキストで、段落ブロックとして追加されます。
 
-### Google Workspace ツール（6種）
+#### `notion_update_page`
+
+既存ページのプロパティを更新。
+
+```
+ユーザー: 「Notionのタスクのステータスを完了に更新して」
+→ notion_update_page {
+    pageId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    properties: "{\"Status\": {\"status\": {\"name\": \"完了\"}}}"
+  }
+```
+
+`properties` は Notion プロパティ形式の JSON 文字列です。更新するプロパティのみ指定し、未指定のプロパティは変更されません。
+
+#### `notion_archive_page`
+
+ページをアーカイブ（ソフトデリート）。
+
+```
+ユーザー: 「Notionの古いページをアーカイブして」
+→ notion_archive_page {
+    pageId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  }
+```
+
+アーカイブしたページは Notion の UI から復元できます。完全削除は行いません。
+
+### Google Workspace ツール（9種）
 
 #### `workspace_search_drive`
 
@@ -190,6 +217,92 @@ Gmail を検索。Gmail の検索構文をサポート。
 ユーザー: 「メールでリリースノートを検索して」
 → workspace_search_gmail { query: "subject:リリースノート after:2026/03/01" }
 ```
+
+#### `workspace_update_sheet`
+
+スプレッドシートの指定セル範囲に値を書き込む。
+
+```
+ユーザー: 「スプシの B2 セルに Sprint 5 の完了数を書き込んで」
+→ workspace_update_sheet {
+    spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms",
+    range: "Sheet1!B2",
+    values: [[42]]
+  }
+```
+
+`values` は 2次元配列（行×列）です。`valueInputOption` のデフォルトは `USER_ENTERED`（数式・日付を自動解釈）。
+
+#### `workspace_append_sheet`
+
+スプレッドシートに行を追加。既存データの末尾に自動的に追記される。
+
+```
+ユーザー: 「スプシにスプリント実績行を追記して」
+→ workspace_append_sheet {
+    spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms",
+    range: "Sheet1!A:D",
+    values: [["Sprint 5", "2026-03-28", 42, "完了"]]
+  }
+```
+
+`range` はシート名のみ（例: `Sheet1!A:D`）でも指定可能。Sheets API が既存データの末尾を自動検出して追記します。
+
+#### `workspace_create_event`
+
+Google カレンダーにイベントを作成。
+
+```
+ユーザー: 「Sprint レビューを来週月曜に登録して」
+→ workspace_create_event {
+    calendarId: "primary",
+    summary: "Sprint 5 レビュー",
+    start: "2026-04-06T14:00:00+09:00",
+    end: "2026-04-06T15:00:00+09:00",
+    description: "Sprint 5 の成果発表とレトロスペクティブ",
+    attendees: ["team@example.com"]
+  }
+```
+
+`attendees` は省略可能。`start`/`end` は RFC 3339 形式（タイムゾーンオフセット付き推奨）。
+
+---
+
+## OAuth スコープ変更（v5.2）
+
+Phase 1 Workspace Bridge Read+Write の追加に伴い、Google OAuth スコープが変更されました。
+
+### スコープ変更一覧
+
+| スコープ                                             | 変更前                 | 変更後       | 理由                               |
+| ---------------------------------------------------- | ---------------------- | ------------ | ---------------------------------- |
+| `https://www.googleapis.com/auth/spreadsheets`       | `.readonly` サブセット | フルアクセス | `update_sheet`/`append_sheet` 追加 |
+| `https://www.googleapis.com/auth/calendar`           | `.readonly` サブセット | フルアクセス | `create_event` 追加                |
+| `https://www.googleapis.com/auth/drive.readonly`     | — (変更なし)           | 変更なし     | 読み取りのみのまま                 |
+| `https://www.googleapis.com/auth/documents.readonly` | — (変更なし)           | 変更なし     | 読み取りのみのまま                 |
+| `https://www.googleapis.com/auth/gmail.readonly`     | — (変更なし)           | 変更なし     | 読み取りのみのまま                 |
+
+### 既存ユーザーへの移行手順
+
+既存の `GOOGLE_REFRESH_TOKEN` を使用している場合は、新しいスコープで再認証が必要です。
+
+```bash
+# 1. Google Cloud Console で OAuth クレデンシャルを確認
+#    https://console.cloud.google.com/apis/credentials
+
+# 2. 新しいスコープでリフレッシュトークンを再発行
+#    OAuth 認証フローを再実行し、以下のスコープを要求:
+#    - https://www.googleapis.com/auth/spreadsheets
+#    - https://www.googleapis.com/auth/calendar
+#    - https://www.googleapis.com/auth/drive.readonly
+#    - https://www.googleapis.com/auth/documents.readonly
+#    - https://www.googleapis.com/auth/gmail.readonly
+
+# 3. 新しい GOOGLE_REFRESH_TOKEN を環境変数に設定
+export GOOGLE_REFRESH_TOKEN="1//new-token-here"
+```
+
+> **注意**: 読み取り専用操作のみを使用する場合は、以前の `readonly` スコープのままでも動作します。書き込みツール（`workspace_update_sheet`, `workspace_append_sheet`, `workspace_create_event`）はフルスコープが必要です。
 
 ---
 

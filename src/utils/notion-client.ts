@@ -15,6 +15,7 @@ import type {
   NotionQueryResponse,
   NotionCreateParams,
   NotionBlockInput,
+  NotionUpdatePageParams,
 } from '../types/notion.js';
 
 /** Injectable Notion client interface — mirrors GhRunner pattern. */
@@ -31,6 +32,10 @@ export interface NotionClient {
     blockId: string,
     children: readonly NotionBlockInput[]
   ) => Promise<NotionBlockChildrenResponse>;
+  readonly updatePage: (
+    pageId: string,
+    params: NotionUpdatePageParams
+  ) => Promise<NotionPageResponse>;
 }
 
 /** Maximum retry attempts for rate-limited requests. */
@@ -157,6 +162,13 @@ export function createNotionClient(token: string): NotionClient {
           body: JSON.stringify({ children }),
         }
       );
+    },
+
+    updatePage: async (pageId, params) => {
+      return notionFetch<NotionPageResponse>(`${BASE_URL}/pages/${pageId}`, token, {
+        method: 'PATCH',
+        body: JSON.stringify(params),
+      });
     },
   };
 }

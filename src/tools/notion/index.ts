@@ -5,6 +5,8 @@ import {
   notionQueryDatabaseSchema,
   notionCreatePageSchema,
   notionAppendBlocksSchema,
+  notionUpdatePageSchema,
+  notionArchivePageSchema,
 } from '../../schemas/notion.js';
 import { createNotionClient } from '../../utils/notion-client.js';
 import type { NotionClient } from '../../utils/notion-client.js';
@@ -13,6 +15,8 @@ import { notionGetPage } from './get-page.js';
 import { notionQueryDatabase } from './query-database.js';
 import { notionCreatePage } from './create-page.js';
 import { notionAppendBlocks } from './append-blocks.js';
+import { notionUpdatePage } from './update-page.js';
+import { notionArchivePage } from './archive-page.js';
 
 /** Lazy-initialized Notion client singleton. */
 let cachedClient: NotionClient | undefined;
@@ -118,6 +122,36 @@ export function registerNotionTools(server: McpServer): void {
       const client = getClient();
       if (!client) return NOT_CONFIGURED;
       return notionAppendBlocks(client, args);
+    }
+  );
+
+  server.registerTool(
+    'notion_update_page',
+    {
+      description:
+        'Update properties on an existing Notion page (title, status, select, date, etc.)',
+      inputSchema: notionUpdatePageSchema,
+      annotations: { idempotentHint: true, openWorldHint: true },
+    },
+    async (args) => {
+      const client = getClient();
+      if (!client) return NOT_CONFIGURED;
+      return notionUpdatePage(client, args);
+    }
+  );
+
+  server.registerTool(
+    'notion_archive_page',
+    {
+      description:
+        'Archive or unarchive a Notion page (archive=true to archive, archive=false to unarchive)',
+      inputSchema: notionArchivePageSchema,
+      annotations: { destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async (args) => {
+      const client = getClient();
+      if (!client) return NOT_CONFIGURED;
+      return notionArchivePage(client, args);
     }
   );
 }

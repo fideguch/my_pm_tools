@@ -4,14 +4,14 @@
 
 ## Product Vision
 
-> **JTBD**: PM が GitHub Projects V2 の環境構築・日常運用・分析を自然言語で即実行する
+> **JTBD**: PM が GitHub Projects V2 の管理と Notion・Google Workspace の読み書きを自然言語で即実行する
 
-| Field           | Definition                                                                                             |
-| --------------- | ------------------------------------------------------------------------------------------------------ |
-| **Target User** | 個人〜小規模チーム（1-10人）の PM / テックリード                                                       |
-| **Core Value**  | GraphQL API の複雑さを吸収し、CLI ワンコマンドで完結。Notion + Google Workspace 連携で外部データも統合 |
-| **Scope**       | Mode A(Setup), Mode B(Daily Ops), Mode C(Analytics), Migration                                         |
-| **Non-Goals**   | GUI構築, マルチOrg対応, Slack連携自前実装, Jira/Linear完全代替                                         |
+| Field           | Definition                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Target User** | 個人〜小規模チーム（1-10人）の PM / テックリード                                                                                |
+| **Core Value**  | GraphQL API + Notion API + Google APIs の複雑さを吸収し、CLI で完結。外部ドキュメント・スプレッドシート・カレンダーの双方向連携 |
+| **Scope**       | Mode A(Setup), Mode B(Daily Ops), Mode C(Analytics), Migration, Workspace Bridge(Read+Write)                                    |
+| **Non-Goals**   | GUI構築, マルチOrg対応, Slack連携自前実装, Jira/Linear完全代替, Gmail送信                                                       |
 
 **Suite内の位置づけ**: `requirements_designer → speckit-bridge → **my_pm_tools** → pm-data-analysis`。仕様が固まった後の実行管理レイヤー。
 
@@ -186,6 +186,11 @@ Claude Desktop の設定 (`~/.claude/settings.json` または MCP 設定):
 | `workspace_get_slides`     | Drive API    | スライド取得（テキスト）                                           |
 | `workspace_list_events`    | Calendar API | カレンダーイベント取得                                             |
 | `workspace_search_gmail`   | Gmail API    | メール検索                                                         |
+| `workspace_update_sheet`   | Sheets API   | スプレッドシートセル書き込み                                       |
+| `workspace_append_sheet`   | Sheets API   | スプレッドシート行追加                                             |
+| `workspace_create_event`   | Calendar API | カレンダーイベント作成                                             |
+| `notion_update_page`       | Notion API   | ページプロパティ更新                                               |
+| `notion_archive_page`      | Notion API   | ページアーカイブ（削除）                                           |
 
 **ステータス別名（11種）**: 英語の省略形で日本語ステータスを操作可能。
 
@@ -214,7 +219,7 @@ Claude Desktop の設定 (`~/.claude/settings.json` または MCP 設定):
 
 ```bash
 npm install
-npm test            # リグレッションテスト (476件)
+npm test            # リグレッションテスト (502件)
 npm run build       # MCP Server ビルド
 npm run quality     # lint + typecheck + format:check
 ```

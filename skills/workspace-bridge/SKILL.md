@@ -2,8 +2,8 @@
 name: workspace-bridge
 description: >-
   Notion + Google Workspace bridge for GitHub Project Manager.
-  Provides 11 MCP tools for reading/writing Notion pages and databases,
-  searching Google Drive, reading Sheets, listing Calendar events,
+  Provides 16 MCP tools for reading/writing Notion pages and databases,
+  searching Google Drive, reading/writing Sheets, listing/creating Calendar events,
   and searching Gmail. Extends the core project management workflow
   with external knowledge and document integration.
 type: automation
@@ -31,13 +31,13 @@ estimated_time: '1-5 min per operation'
 
 # Workspace Bridge
 
-Notion + Google Workspace bridge for GitHub Project Manager. Provides read/write access to external PM tools through 11 MCP tools.
+Notion + Google Workspace bridge for GitHub Project Manager. Provides read/write access to external PM tools through 16 MCP tools.
 
 ---
 
-## Supported Tools (11)
+## Supported Tools (16)
 
-### Notion Tools (5)
+### Notion Tools (7)
 
 | Tool                    | Operation | Description                                       |
 | ----------------------- | --------- | ------------------------------------------------- |
@@ -46,8 +46,10 @@ Notion + Google Workspace bridge for GitHub Project Manager. Provides read/write
 | `notion_query_database` | Read      | Query database with filter/sort                   |
 | `notion_create_page`    | Write     | Create page under database or page                |
 | `notion_append_blocks`  | Write     | Append paragraph blocks to existing page          |
+| `notion_update_page`    | Write     | Update page properties                            |
+| `notion_archive_page`   | Write     | Archive (soft-delete) a page                      |
 
-### Google Workspace Tools (6)
+### Google Workspace Tools (9)
 
 | Tool                     | Operation | Description                                   |
 | ------------------------ | --------- | --------------------------------------------- |
@@ -57,6 +59,9 @@ Notion + Google Workspace bridge for GitHub Project Manager. Provides read/write
 | `workspace_get_slides`   | Read      | Export Slides as plain text                   |
 | `workspace_list_events`  | Read      | List Calendar events with time range filter   |
 | `workspace_search_gmail` | Read      | Search Gmail with metadata extraction         |
+| `workspace_update_sheet` | Write     | Write values to spreadsheet cell range        |
+| `workspace_append_sheet` | Write     | Append rows to a spreadsheet                  |
+| `workspace_create_event` | Write     | Create a Calendar event with attendees        |
 
 ---
 
@@ -142,6 +147,61 @@ workspace_list_events({
   limit: 20
 })
 → Returns events in the time range
+```
+
+### Notion: Update page properties
+
+```
+notion_update_page({
+  pageId: "page-uuid-1234",
+  properties: '{"Status":{"status":{"name":"Done"}}}'
+})
+→ Returns updated page object
+```
+
+### Notion: Archive a page
+
+```
+notion_archive_page({
+  pageId: "page-uuid-1234"
+})
+→ Returns archived page confirmation
+```
+
+### Google: Write to spreadsheet
+
+```
+workspace_update_sheet({
+  spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms",
+  range: "Sheet1!B2:D2",
+  values: [[42, "Sprint 5", "2026-03-28"]]
+})
+→ Returns updated cell count
+```
+
+### Google: Append rows to spreadsheet
+
+```
+workspace_append_sheet({
+  spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms",
+  range: "Sheet1!A:D",
+  values: [["Sprint 5", "2026-03-28", 42, "Done"]]
+})
+→ Returns appended range
+```
+
+### Google: Create Calendar event
+
+```
+workspace_create_event({
+  calendarId: "primary",
+  summary: "Sprint 5 Review",
+  start: "2026-04-06T14:00:00+09:00",
+  end: "2026-04-06T15:00:00+09:00",
+  description: "Sprint 5 demo and retrospective",
+  attendees: ["team@example.com"]
+})
+→ Returns created event with ID and link
 ```
 
 ---

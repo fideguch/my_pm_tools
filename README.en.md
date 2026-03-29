@@ -154,12 +154,17 @@ Add to Claude Desktop config:
 | `notion_query_database`    | Notion API   | Query database with filters and sorting                       |
 | `notion_create_page`       | Notion API   | Create a new page                                             |
 | `notion_append_blocks`     | Notion API   | Append blocks to a page                                       |
+| `notion_update_page`       | Notion API   | Update page properties                                        |
+| `notion_archive_page`      | Notion API   | Archive (soft-delete) a page                                  |
 | `workspace_search_drive`   | Drive API    | Search files in Google Drive                                  |
 | `workspace_get_doc`        | Drive API    | Get Google Docs content (Markdown)                            |
 | `workspace_get_sheet`      | Sheets API   | Get spreadsheet data                                          |
 | `workspace_get_slides`     | Drive API    | Get slide content (text extraction)                           |
 | `workspace_list_events`    | Calendar API | List calendar events                                          |
 | `workspace_search_gmail`   | Gmail API    | Search emails                                                 |
+| `workspace_update_sheet`   | Sheets API   | Write values to spreadsheet cells                             |
+| `workspace_append_sheet`   | Sheets API   | Append rows to a spreadsheet                                  |
+| `workspace_create_event`   | Calendar API | Create a calendar event                                       |
 
 **Status aliases (11 mappings)**: Use English shorthand to operate Japanese statuses.
 
@@ -186,7 +191,7 @@ Resolution order: exact match → alias match → partial match (case-insensitiv
 
 ```bash
 npm install
-npm test            # 476 regression tests
+npm test            # 502 regression tests
 npm run build       # Build MCP server
 npm run quality     # lint + typecheck + format:check
 ```

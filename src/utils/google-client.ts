@@ -5,25 +5,54 @@
  *
  * APIs: Drive v3, Sheets v4, Calendar v3, Gmail v1
  * Scopes: drive.readonly, spreadsheets.readonly, calendar.readonly, gmail.readonly
+ *         spreadsheets (write), calendar (write)
  */
 import type {
   GoogleCredentials,
   DriveSearchResponse,
   DriveSearchOpts,
   SheetValuesResponse,
+  SheetUpdateResponse,
+  SheetAppendResponse,
   EventListResponse,
   EventListParams,
+  CalendarEventInput,
+  CalendarEventResponse,
   GmailListResponse,
   GmailListOpts,
   GmailMessageResponse,
 } from '../types/workspace.js';
+
+/** Options for googleFetchCore — supports GET (default) and write methods. */
+interface GoogleFetchOptions {
+  readonly method?: string;
+  readonly body?: string;
+  readonly contentType?: string;
+}
 
 /** Injectable Google client interface — mirrors GhRunner pattern. */
 export interface GoogleClient {
   readonly searchDrive: (query: string, opts?: DriveSearchOpts) => Promise<DriveSearchResponse>;
   readonly exportFile: (fileId: string, mimeType: string) => Promise<string>;
   readonly getSheetValues: (spreadsheetId: string, range: string) => Promise<SheetValuesResponse>;
+  readonly updateSheetValues: (
+    spreadsheetId: string,
+    range: string,
+    values: readonly (readonly string[])[],
+    inputOption?: string
+  ) => Promise<SheetUpdateResponse>;
+  readonly appendSheetValues: (
+    spreadsheetId: string,
+    range: string,
+    values: readonly (readonly string[])[],
+    inputOption?: string,
+    insertDataOption?: string
+  ) => Promise<SheetAppendResponse>;
   readonly listEvents: (calendarId: string, params: EventListParams) => Promise<EventListResponse>;
+  readonly createEvent: (
+    calendarId: string,
+    event: CalendarEventInput
+  ) => Promise<CalendarEventResponse>;
   readonly listGmailMessages: (query: string, opts?: GmailListOpts) => Promise<GmailListResponse>;
   readonly getGmailMessage: (messageId: string) => Promise<GmailMessageResponse>;
 }
@@ -37,17 +66,35 @@ type ResponseFormat = 'json' | 'text';
 /**
  * Core fetch with OAuth2 bearer token and retry on 429.
  * Shared by JSON and text response paths — eliminates duplication.
+ * Supports GET (default) and write methods via opts parameter.
  */
-async function googleFetchCore(url: string, accessToken: string, format: 'json'): Promise<unknown>;
-async function googleFetchCore(url: string, accessToken: string, format: 'text'): Promise<string>;
 async function googleFetchCore(
   url: string,
   accessToken: string,
-  format: ResponseFormat
+  format: 'json',
+  opts?: GoogleFetchOptions
+): Promise<unknown>;
+async function googleFetchCore(
+  url: string,
+  accessToken: string,
+  format: 'text',
+  opts?: GoogleFetchOptions
+): Promise<string>;
+async function googleFetchCore(
+  url: string,
+  accessToken: string,
+  format: ResponseFormat,
+  opts?: GoogleFetchOptions
 ): Promise<unknown> {
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const headers: Record<string, string> = { Authorization: `Bearer ${accessToken}` };
+    if (opts?.body) {
+      headers['Content-Type'] = opts.contentType ?? 'application/json';
+    }
     const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      method: opts?.method ?? 'GET',
+      headers,
+      ...(opts?.body ? { body: opts.body } : {}),
     });
 
     if (res.status === 429) {
@@ -57,6 +104,30 @@ async function googleFetchCore(
         continue;
       }
       throw new Error('Google API rate limit exceeded after retries.');
+    }
+
+    if (res.status === 403) {
+      const errorBody: unknown = await res.json().catch(() => ({}));
+      const body =
+        errorBody != null && typeof errorBody === 'object'
+          ? (errorBody as Record<string, unknown>)
+          : {};
+      const errObj = body['error'];
+      const msg =
+        typeof errObj === 'object' && errObj !== null
+          ? JSON.stringify(errObj)
+          : String(body['message'] ?? res.statusText);
+      if (
+        msg.includes('insufficient') ||
+        msg.includes('scope') ||
+        msg.includes('PERMISSION_DENIED')
+      ) {
+        throw new Error(
+          `Google API 403: Insufficient OAuth scope. Write operations require updated scopes. ` +
+            `Re-authorize with: spreadsheets, calendar. See docs/workspace-bridge.md for steps.`
+        );
+      }
+      throw new Error(`Google API error 403: ${msg}`);
     }
 
     if (!res.ok) {
@@ -90,15 +161,23 @@ async function googleFetchCore(
 /**
  * Typed JSON fetch with runtime validation — no `as` casts at call sites.
  */
-async function googleFetch<T>(url: string, accessToken: string): Promise<T> {
-  return (await googleFetchCore(url, accessToken, 'json')) as T;
+async function googleFetch<T>(
+  url: string,
+  accessToken: string,
+  opts?: GoogleFetchOptions
+): Promise<T> {
+  return (await googleFetchCore(url, accessToken, 'json', opts)) as T;
 }
 
 /**
  * Fetch that returns raw text (for Drive export endpoints).
  */
-async function googleFetchText(url: string, accessToken: string): Promise<string> {
-  return googleFetchCore(url, accessToken, 'text');
+async function googleFetchText(
+  url: string,
+  accessToken: string,
+  opts?: GoogleFetchOptions
+): Promise<string> {
+  return googleFetchCore(url, accessToken, 'text', opts);
 }
 
 /**
@@ -224,6 +303,53 @@ export function createGoogleClient(creds: GoogleCredentials): GoogleClient {
       return googleFetch<GmailMessageResponse>(
         `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}?${params.toString()}`,
         token
+      );
+    },
+
+    updateSheetValues: async (spreadsheetId, range, values, inputOption) => {
+      const token = await getToken();
+      const encodedRange = encodeURIComponent(range);
+      const option = inputOption ?? 'USER_ENTERED';
+      const params = new URLSearchParams({ valueInputOption: option });
+      return googleFetch<SheetUpdateResponse>(
+        `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodedRange}?${params.toString()}`,
+        token,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ range, values }),
+        }
+      );
+    },
+
+    appendSheetValues: async (spreadsheetId, range, values, inputOption, insertDataOption) => {
+      const token = await getToken();
+      const encodedRange = encodeURIComponent(range);
+      const option = inputOption ?? 'USER_ENTERED';
+      const insertOpt = insertDataOption ?? 'INSERT_ROWS';
+      const params = new URLSearchParams({
+        valueInputOption: option,
+        insertDataOption: insertOpt,
+      });
+      return googleFetch<SheetAppendResponse>(
+        `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodedRange}:append?${params.toString()}`,
+        token,
+        {
+          method: 'POST',
+          body: JSON.stringify({ range, values }),
+        }
+      );
+    },
+
+    createEvent: async (calendarId, event) => {
+      const token = await getToken();
+      const encodedCalId = encodeURIComponent(calendarId);
+      return googleFetch<CalendarEventResponse>(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodedCalId}/events`,
+        token,
+        {
+          method: 'POST',
+          body: JSON.stringify(event),
+        }
       );
     },
   };

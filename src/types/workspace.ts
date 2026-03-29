@@ -115,3 +115,41 @@ export interface GmailListResponse {
 export interface GmailListOpts {
   readonly limit?: number;
 }
+
+// --- Sheets Write API v4 ---
+
+export interface SheetUpdateResponse {
+  readonly spreadsheetId: string;
+  readonly updatedRange: string;
+  readonly updatedRows: number;
+  readonly updatedColumns: number;
+  readonly updatedCells: number;
+}
+
+export interface SheetAppendResponse {
+  readonly spreadsheetId: string;
+  readonly tableRange: string;
+  readonly updates: SheetUpdateResponse;
+}
+
+// --- Calendar Write API v3 ---
+
+export interface CalendarEventInput {
+  readonly summary: string;
+  readonly start: CalendarEventTime;
+  readonly end: CalendarEventTime;
+  readonly description?: string;
+  readonly location?: string;
+  readonly timeZone?: string;
+}
+
+export interface CalendarEventResponse {
+  readonly id: string;
+  readonly htmlLink: string;
+  readonly summary: string;
+  readonly start: CalendarEventTime;
+  readonly end: CalendarEventTime;
+  readonly status: string;
+  readonly description?: string;
+  readonly location?: string;
+}

@@ -130,3 +130,10 @@ export interface NotionBlockInput {
   readonly type: string;
   readonly [key: string]: unknown;
 }
+
+// --- Update Page Parameters ---
+
+export interface NotionUpdatePageParams {
+  readonly properties?: Record<string, unknown>;
+  readonly archived?: boolean;
+}

@@ -31,6 +31,7 @@ export function createMockNotion(responses: readonly unknown[]): NotionClient {
     queryDatabase: async () => next() as NotionQueryResponse,
     createPage: async () => next() as NotionPageResponse,
     appendBlocks: async () => next() as NotionBlockChildrenResponse,
+    updatePage: async () => next() as NotionPageResponse,
   };
 }
 

@@ -1,7 +1,7 @@
 # MCP Integration
 
 How to configure the GitHub Project Manager MCP server so Claude Code (or any
-MCP-capable agent) can call the 11 project tools directly.
+MCP-capable agent) can call the 27 MCP tools directly.
 
 ## Build the server
 
@@ -63,11 +63,11 @@ In Claude Code, run:
 /mcp
 ```
 
-You should see `github-project-manager` listed as an active server with 11 tools.
+You should see `github-project-manager` listed as an active server with 27 tools.
 
 ## Tool reference
 
-All 11 tools share the same naming convention: `project_<action>`.
+All 27 tools use consistent naming: `project_*` (GitHub), `workspace_*` (Google), `notion_*` (Notion).
 
 ### Read tools (GraphQL)
 

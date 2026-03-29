@@ -4,15 +4,15 @@
 
 - **Repository**: https://github.com/fideguch/my_pm_tools
 - **Branch**: main
-- **Latest commit**: ce1dd2c (refactor: eliminate as casts, DRY shared utils)
-- **Tests**: 459 passed, 2 failed (pre-existing Five-File Sync drift)
+- **Latest commit**: 8d4b486 (refactor: harden Workspace Bridge quality)
+- **Tests**: 502 passed, 0 failed
 - **Quality**: npm run quality clean (0 errors)
 - **Build**: npm run build succeeds
-- **MCP Tools**: 22 (11 GitHub + 5 Notion + 6 Google Workspace)
+- **MCP Tools**: 27 (11 GitHub + 7 Notion + 9 Google Workspace)
 
 ## What Was Done (v3.0 Session)
 
-### 1. Workspace Bridge — 11 New MCP Tools
+### 1. Workspace Bridge — 16 MCP Tools (11 Read + 5 Write)
 
 | Tool                     | API         | Purpose                                     |
 | ------------------------ | ----------- | ------------------------------------------- |
@@ -21,12 +21,17 @@
 | `notion_query_database`  | Notion API  | DB query with filter/sort                   |
 | `notion_create_page`     | Notion API  | Create page under DB or page                |
 | `notion_append_blocks`   | Notion API  | Append blocks to page                       |
+| `notion_update_page`     | Notion API  | Update page properties (13 types)           |
+| `notion_archive_page`    | Notion API  | Archive/unarchive page (reversible)         |
 | `workspace_search_drive` | Drive v3    | File search                                 |
 | `workspace_get_doc`      | Drive v3    | Docs to Markdown (export API)               |
 | `workspace_get_sheet`    | Sheets v4   | Sheet data with headers                     |
 | `workspace_get_slides`   | Drive v3    | Slides to text (export API)                 |
 | `workspace_list_events`  | Calendar v3 | Calendar events                             |
 | `workspace_search_gmail` | Gmail v1    | Email search with metadata                  |
+| `workspace_update_sheet` | Sheets v4   | Update cell values in range                 |
+| `workspace_append_sheet` | Sheets v4   | Append rows to sheet                        |
+| `workspace_create_event` | Calendar v3 | Create calendar event                       |
 
 ### 2. Architecture
 
