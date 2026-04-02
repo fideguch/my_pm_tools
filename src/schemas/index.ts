@@ -90,6 +90,19 @@ export const manageAssigneesSchema = {
   removeAssignees: z.array(z.string()).optional().describe('GitHub usernames to unassign'),
 };
 
+/** project_create_issue input schema */
+export const createIssueSchema = {
+  ...repoParam,
+  title: z.string().describe('Issue title (supports Japanese)'),
+  body: z.string().optional().describe('Issue body in Markdown (supports Japanese)'),
+  labels: z.array(z.string()).optional().describe('Labels to apply (e.g. ["bug", "feature"])'),
+  assignees: z.array(z.string()).optional().describe('GitHub usernames to assign'),
+  template: z
+    .string()
+    .optional()
+    .describe('Issue template filename (e.g. "bug_report.yml", "feature_request.yml")'),
+};
+
 /** project_set_issue_state input schema */
 export const setIssueStateSchema = {
   ...repoParam,

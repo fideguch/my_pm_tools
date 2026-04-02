@@ -38,7 +38,7 @@ test.describe('PM Assistant Redesign Validation', () => {
   test('SKILL.md has dialog patterns for Issue creation', () => {
     const content = readFile('SKILL.md');
     expect(content).toContain('Issue にして');
-    expect(content).toContain('gh issue create');
+    expect(content).toContain('project_create_issue');
   });
 
   test('SKILL.md has dialog patterns for PR creation', () => {

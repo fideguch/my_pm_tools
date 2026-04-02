@@ -10,6 +10,7 @@ import {
   listFieldsSchema,
   sprintReportSchema,
   getIssueSchema,
+  createIssueSchema,
   editIssueSchema,
   manageLabelsSchema,
   manageAssigneesSchema,
@@ -22,6 +23,7 @@ import { moveStatus } from './move-status.js';
 import { setPriority } from './set-priority.js';
 import { sprintReport } from './sprint-report.js';
 import { getIssue } from './get-issue.js';
+import { createIssue } from './create-issue.js';
 import { editIssue } from './edit-issue.js';
 import { manageLabels } from './manage-labels.js';
 import { manageAssignees } from './manage-assignees.js';
@@ -110,6 +112,16 @@ export function registerTools(server: McpServer, gql: typeof graphql, gh?: GhRun
   );
 
   // --- Write tools (gh CLI) ---
+
+  server.registerTool(
+    'project_create_issue',
+    {
+      description: 'Create a new issue in a repository (supports Japanese title and body)',
+      inputSchema: createIssueSchema,
+      annotations: { destructiveHint: false },
+    },
+    async (args) => createIssue(ghRunner, args)
+  );
 
   server.registerTool(
     'project_edit_issue',

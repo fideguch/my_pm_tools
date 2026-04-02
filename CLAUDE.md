@@ -47,10 +47,10 @@ my_pm_tools/
 │   ├── index.ts                 # Entry point (stdio transport)
 │   ├── server.ts                # Server factory
 │   ├── graphql/                 # GraphQL client, queries, mutations
-│   ├── tools/                   # 27 MCP tools
+│   ├── tools/                   # 28 MCP tools
 │   │   ├── notion/              # Notion API tools (7: search, get-page, query-db, create-page, append-blocks, update-page, archive-page)
 │   │   ├── workspace/           # Google Workspace tools (9: drive, docs, sheets, slides, calendar, gmail, update-sheet, append-sheet, create-event)
-│   │   └── *.ts                 # GitHub Project tools (11: list-fields, list-items, add-item, etc.)
+│   │   └── *.ts                 # GitHub Project tools (12: list-fields, list-items, add-item, create-issue, etc.)
 │   ├── schemas/                 # Zod input schemas
 │   └── types/                   # TypeScript type definitions
 ├── templates/                   # Files to copy into TARGET repos

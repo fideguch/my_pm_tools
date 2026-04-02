@@ -352,7 +352,7 @@ test.describe('MCP Server Structure Validation', () => {
     expect(content).toMatch(/^#!\/usr\/bin\/env node/);
   });
 
-  test('src/tools/index.ts registers all 11 tools', () => {
+  test('src/tools/index.ts registers all 12 GitHub project tools', () => {
     const content = readFile('src/tools/index.ts');
     expect(content).toContain('project_list_fields');
     expect(content).toContain('project_list_items');
@@ -361,6 +361,7 @@ test.describe('MCP Server Structure Validation', () => {
     expect(content).toContain('project_set_priority');
     expect(content).toContain('project_sprint_report');
     expect(content).toContain('project_get_issue');
+    expect(content).toContain('project_create_issue');
     expect(content).toContain('project_edit_issue');
     expect(content).toContain('project_manage_labels');
     expect(content).toContain('project_manage_assignees');
